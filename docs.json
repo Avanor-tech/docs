@@ -1,0 +1,126 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Documentation",
+  "colors": {
+    "primary": "#0D9373"
+  },
+  "interaction": {
+    "drilldown": false
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Overview",
+        "pages": [
+          "overview"
+        ]
+      },
+      {
+        "group": "Payments",
+        "pages": [
+          {
+            "group": "Invoice issue (payment creation)",
+            "root": "invoice-create",
+            "expanded": false,
+            "openapi": "openapi.yaml",
+            "pages": [
+              "POST /invoice/try",
+              "POST /invoice/create",
+              "POST /invoice/check",
+              "POST /invoice/hold",
+              "POST /invoice/charge",
+              "POST /invoice/unhold",
+              "POST /shop_input_config/shop"
+            ]
+          },
+          {
+            "group": "Refunds",
+            "root": "invoice-refund",
+            "expanded": false,
+            "openapi": "openapi.yaml",
+            "pages": [
+              "POST /invoice/create-refund",
+              "POST /invoice/get-refunds"
+            ]
+          },
+          {
+            "group": "Recurrent invoice",
+            "pages": [
+              "invoice-recurrent"
+            ],
+            "hidden": true
+          },
+          {
+            "group": "Invoice statuses",
+            "expanded": false,
+            "pages": [
+              "invoice-statuses"
+            ]
+          }
+        ]
+      },
+      {
+        "group": "Withdraws",
+        "pages": [
+          {
+            "group": "Payout creation",
+            "root": "withdraw-create",
+            "expanded": false,
+            "openapi": "openapi.yaml",
+            "pages": [
+              "POST /withdraw/try",
+              "POST /check_account",
+              "POST /withdraw/create",
+              "POST /withdraw/status",
+              "POST /withdraw/shop_payment_status",
+              "POST /shop_output_config/shop"
+            ]
+          },
+          {
+            "group": "Payout statuses",
+            "expanded": false,
+            "pages": [
+              "withdraw-statuses"
+            ]
+          }
+        ]
+      },
+      {
+        "group": "Callbacks",
+        "pages": [
+          {
+            "group": "Interaction format",
+            "root": "callbacks",
+            "expanded": false,
+            "pages": [
+              "invoice-callback-schema",
+              "refund-callback-schema"
+            ]
+          }
+        ]
+      },
+      {
+        "group": "Directories and other methods",
+        "pages": [
+          {
+            "group": "Other shop methods",
+            "root": "other-shop-methods",
+            "expanded": false,
+            "openapi": "openapi.yaml",
+            "pages": [
+              "POST /shop_balance"
+            ]
+          },
+          {
+            "group": "List of possible errors",
+            "expanded": false,
+            "pages": [
+              "errors-list"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
