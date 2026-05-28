@@ -42,7 +42,7 @@ info:
 
     <SecurityDefinitions />
 servers:
-  - url: https://api.m5solutions.io/gateway/v1/
+  - url: https://api.m5solutions.io/gateway/v1
     description: The production API server
 tags:
   - name: invoice-create
@@ -701,7 +701,7 @@ paths:
             schema:
               $ref: '#/components/schemas/InvoicePayload.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       tags:
         - invoice-create
       description: |
@@ -749,7 +749,7 @@ paths:
                             $ref: '#/components/schemas/InvoiceCreateInfo.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -874,7 +874,7 @@ paths:
                             $ref: '#/components/schemas/InvoiceCheckData.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       tags:
         - invoice-create
       requestBody:
@@ -902,7 +902,7 @@ paths:
                             $ref: '#/components/schemas/InvoiceCreateInfo.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -959,7 +959,7 @@ paths:
                             $ref: '#/components/schemas/InvoiceChargeInfo.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -1000,7 +1000,7 @@ paths:
                             $ref: '#/components/schemas/InvoiceUnholdInfo.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -1035,7 +1035,7 @@ paths:
         * `shop_id`
         </div>
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -1067,7 +1067,7 @@ paths:
         * `shop_refund_id`
         </div>
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -1107,7 +1107,7 @@ paths:
         * `shop_id`
         </div>
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -1149,7 +1149,7 @@ paths:
         * `shop_request_id`
         </div>
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -1187,7 +1187,7 @@ paths:
         * `token`
         </div>
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -1220,7 +1220,7 @@ paths:
         * `token`
         </div>
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -1284,7 +1284,7 @@ paths:
       tags:
         - withdraw-create
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -1311,7 +1311,7 @@ paths:
                             $ref: '#/components/schemas/CheckAccountResponse.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       tags:
         - withdraw-create
       requestBody:
@@ -1381,7 +1381,7 @@ paths:
       tags:
         - withdraw-create
       security:
-        - Request signature: []
+        - RequestSignature: []
   /withdraw/status:
     post:
       summary: Payout status request by ID of the payout created in M5 system
@@ -1411,7 +1411,7 @@ paths:
                             $ref: '#/components/schemas/StatusResponse.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       tags:
         - withdraw-create
       requestBody:
@@ -1448,7 +1448,7 @@ paths:
                             $ref: '#/components/schemas/StatusResponse.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       tags:
         - withdraw-create
       requestBody:
@@ -1470,7 +1470,7 @@ paths:
         * `shop_id`
         </div>
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -1499,7 +1499,7 @@ paths:
         * `shop_id`
         </div>
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -1523,9 +1523,9 @@ paths:
         - other-shop-methods
 components:
   securitySchemes:
-    Request signature:
+    RequestSignature:
       type: apiKey
-      in: requestBody
+      in: header
       name: sign
       description: |+
         Every API request must be signed so that we can identify your account.
@@ -1984,9 +1984,23 @@ components:
                   example: '05'
           required:
             - client_ip
+    InvoiceCreatePaymentToken.v1:
+      title: Invoice issue by payment token
+      allOf:
+        - $ref: '#/components/schemas/InvoiceCreateBase.v1'
+        - type: object
+          properties:
+            payment_token:
+              type: string
+              format: uuid
+              description: Payment token received from a previous successful payment when `issue_payment_token` was used
+              example: 4f6cf35x-2c4y-483z-a0a9-158621f77a21
+          required:
+            - payment_token
     InvoiceCreatePayload.v1:
       oneOf:
         - $ref: '#/components/schemas/InvoiceCreateCard.v1'
+        - $ref: '#/components/schemas/InvoiceCreatePaymentToken.v1'
     InvoiceCreateInfo.v1:
       title: Invoice payment form
       type: object
@@ -2262,6 +2276,21 @@ components:
           * `SUCCESS` - token successfully created
           * `FAILED` - token creation failed
           * `DELETED` - token deleted
+    PaymentTokenStatusOnCreate.v1:
+      title: Payment token status on invoice create
+      type: string
+      enum:
+        - CREATED
+        - WAITING
+        - SUCCESS
+        - FAILED
+      example: SUCCESS
+      description: |-
+        Token issue status on invoice create:
+          * `CREATED` - request for token issue created
+          * `WAITING` - request is waiting for user's actions
+          * `SUCCESS` - token successfully created
+          * `FAILED` - token creation failed
     InvoiceCheckData.v1:
       title: Invoice status verification
       allOf:
@@ -2397,7 +2426,6 @@ components:
               maxLength: 150
               pattern: ^[A-Za-z_,\[\]]+$
               description: Payment direction for payout. Currency of receipt depends on the specified payment way. Execute the API request for get list of additional data.
-          required: []
     PayMethod.v1:
       title: Payment method
       type: object
