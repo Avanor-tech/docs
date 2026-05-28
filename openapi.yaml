@@ -1,17 +1,17 @@
 openapi: 3.0.2
 info:
   version: 1.0.0
-  title: M5 Payment Gateway API
-  termsOfService: https://m5solutions.io/terms
+  title: M4 Payment Gateway API
+  termsOfService: https://m4solutions.io/terms
   contact:
-    url: https://api.m5solutions.io/gateway/v1/
-    name: M5 Support
+    url: https://api.m4psp.com/gateway/v1/
+    name: M4 Support
   description: |-
-    ![M5 Logo](/assets/m5/images/m5-logo.png)
+    ![M4 Logo](/assets/m4/images/m4-logo.png)
 
     ## Description
 
-    Using this API, you can interact with M5 payment platform: accept payments, make payments and perform other operations supported by the platform.
+    Using this API, you can interact with M4 payment platform: accept payments, make payments and perform other operations supported by the platform.
 
     API runs over HTTP(S) protocol and uses JSON format to exchange data.
 
@@ -22,7 +22,7 @@ info:
 
     ## API changes
 
-    To ensure that our API improvements do not break your integration, please consider the following list of backward compatible changes that can occur without increasing your M5 API version number.
+    To ensure that our API improvements do not break your integration, please consider the following list of backward compatible changes that can occur without increasing your M4 API version number.
 
     <div class="success">
     <p>We consider the following changes to our services to be backward-compatible:</p>
@@ -42,8 +42,10 @@ info:
 
     <SecurityDefinitions />
 servers:
-  - url: https://api.m5solutions.io/gateway/v1
+  - url: https://api.m4psp.com/gateway/v1/
     description: The production API server
+  - url: https://api.test.cplus-int.tech/gateway/v1/
+    description: The test API server
 tags:
   - name: invoice-create
     x-displayName: Invoice issue (payment creation)
@@ -71,7 +73,7 @@ tags:
 
       5. The response returns information with the invoice and data to be sent by the specified method to the specified URL for making or charging the payment. It is necessary to send the user to make a payment. In case `result: false`, you need to analyse the error code in the `error_code` field (see [description of error codes](#tag/errors-list)). If the `error code` is not fatal, then you need to wait for the [server notification](#tag/callbacks). If the `error code` is fatal, then communication with our API is over, it is necessary to inform the user that the payment was not created.
 
-      6. After the payment is made or charged by the user, the M5 system [sends a notification](#tag/callbacks) to the URL of interaction with the shop, containing payment information, for more information, see [here](#operation/post-invoice-create);
+      6. After the payment is made or charged by the user, the M4 system [sends a notification](#tag/callbacks) to the URL of interaction with the shop, containing payment information, for more information, see [here](#operation/post-invoice-create);
 
       7. After receiving the charge, the payment is considered successfully completed.
 
@@ -91,13 +93,13 @@ tags:
 
       5. The response returns information with the invoice issued and data to be sent by the specified method to the specified URL for making or charging the payment. It is necessary to refer the user to make the payment. In case `result: false`, you need to analyse the error code in the `error_code` field (see [description of error codes](#tag/errors-list)). If the `error code` is not fatal, then you need to wait for the [server notification](#tag/callbacks). If the `error code` is fatal, then communication with our API is over, it is necessary to inform the user that the payment was not created.
 
-      6. After payment is completed by the user, the M5 system [sends a notification](#tag/callbacks) to the shop's interaction URL, with information about the blocking of funds;
+      6. After payment is completed by the user, the M4 system [sends a notification](#tag/callbacks) to the shop's interaction URL, with information about the blocking of funds;
 
       7. After the funds are blocked on the client's account, you can charge the payment [invoice/charge](#operation/post-invoice-charge) or cancel the holding [invoice/unhold](#operation/post-invoice-unhold);
 
       8. The response returns information with the result of charge (sometimes the payment status may not be final, then you should wait for the notification);
 
-      9. M5 system [will send a notification](#tag/callbacks) to the URL of the interaction of the shop with the final status regarding the confirmation of funds withdrawal.
+      9. M4 system [will send a notification](#tag/callbacks) to the URL of the interaction of the shop with the final status regarding the confirmation of funds withdrawal.
 
       ### Ensuring payments idempotency
 
@@ -112,7 +114,7 @@ tags:
       * In case of a full refund, you refund the successfully paid payment in full.
       * In case of a partial refund - a part of the payment amount, for example, if you want to refund a part of the purchase.
 
-      After confirmation of the refund by the payment system, the M5 system [will send a notification](#tag/callbacks) with details
+      After confirmation of the refund by the payment system, the M4 system [will send a notification](#tag/callbacks) with details
       of refund to the URL transferred in the request when creating the refund. A detailed description of the notification format
       is described [here](#section/Refund-notification-example).
 
@@ -137,7 +139,7 @@ tags:
     description: |
       ### Issued invoice notice after payment or refund
 
-      After changing the payment status or returning to one of the final ones, the M5 system sends a notification to the shop to the URL specified in the shop settings or in the request body (if specified in the description of the request parameters).
+      After changing the payment status or returning to one of the final ones, the M4 system sends a notification to the shop to the URL specified in the shop settings or in the request body (if specified in the description of the request parameters).
 
       <div class="warning">
       <p>To successfully receive server-side notifications, please make sure that your server receiving HTTP requests from us is configured according to the current security standards described on <a href="https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Protection_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Protection_Cheat_Sheet.html</a></p>
@@ -148,7 +150,6 @@ tags:
       Possible values of `type`:
       * `invoice` - payment notification
       * `refund` - refund notification
-      * `payment_token` - notification on payment token issue
 
       Server notifications are sent from the following IP addresses:
 
@@ -186,22 +187,6 @@ tags:
 
       <SchemaDefinition schemaRef="#/components/schemas/RefundCallBack" />
 
-      ## Payment token notification example
-
-      <div class="success">
-      <p>Fields participating in forming the request signature:</p>
-
-      * `expires_at`
-      * `payway`
-      * `shop_id`
-      * `shop_request_id`
-      * `status`
-      * `token`
-
-      <p>General algorithm does not change as compared to signature verification from other callback types. If the field value is null, it is necessary to convert it to string "null".</p>
-
-      </div>
-
       ## Example of Python code to verify the signature of a request
 
       The algorithm implemented below on the example of a server payment notification is the same for a server refund notification.
@@ -210,22 +195,22 @@ tags:
       # Resulting notification string (in format application/json)
       request_body_json = """
           {
-            "shop_id": 100,
-            "shop_order_id": "Shop order id",
-            "description": "Some payment",
-            "shop_amount": 20.0,
+            "shop_id": 1,
+            "shop_order_id": "The store's order ID",
+            "description": "Your payment description",
+            "shop_amount": 100.0,
             "shop_refund": 19.0,
             "shop_currency": 840,
-            "payment_id": 100,
-            "client_price": 20.0,
+            "payment_id": 1234,
+            "client_price": 100.0,
             "ps_currency": "840",
-            "payway": "some_payway_name",
-            "ps_data": "{\\"amount\\": \\"20.00\\", \\"bill_id\\": \\"i_100\\", \\"ccy\\": \\"USD\\", \\"command\\": \\"bill\\", \\"comment\\": \\"[i_100] Payment\\", \\"error\\": 0, \\"prv_name\\": \\"PaymentSystem\\", \\"ps_payer_account\\": \\"971510000000\\", \\"status\\": \\"paid\\", \\"user\\": \\"tel:+971510000000\\"}",
-            "created": "2026-05-16T15:38:07",
-            "updated": "2026-05-16T15:38:07",
+            "payway": "payway_example",
+            "ps_data": "{\\"amount\\": \\"20.00\\", \\"bill_id\\": \\"i_100\\", \\"ccy\\": \\"USD\\", \\"command\\": \\"bill\\", \\"comment\\": \\"[i_100] Payment\\", \\"error\\": 0, \\"prv_name\\": \\"PaymentSystem\\", \\"ps_payer_account\\": \\"150010000097\\", \\"status\\": \\"paid\\", \\"user\\": \\"tel:+150010000097\\"}",
+            "created": "2026-08-27T15:38:07",
+            "updated": "2026-08-27T15:38:07",
             "status": "success",
-            "addons": "{\\"callback_rejected_url\\": \\"https://some-shop.com/callback-rejected-url\\", \\"callback_url\\": \\"https://some-shop.com/callback-url\\", \\"description\\": \\"Some payment\\", \\"failed_url\\": \\"https://some-shop.com/fail\\", \\"phone\\": \\"971510000000\\", \\"success_url\\": \\"https://some-shop.com/success\\"}",
-            "sign": "1d51960a52a6c7e8cf957d1a22ad2b3263603bace013facc335dd1429ecb4e97"
+            "addons": "{\\"callback_rejected_url\\": \\"https://some-shop.com/callback-rejected-url\\", \\"callback_url\\": \\"https://some-shop.com/callback-url\\", \\"description\\": \\"Some payment\\", \\"failed_url\\": \\"https://some-shop.com/fail\\", \\"phone\\": \\"150010000097\\", \\"success_url\\": \\"https://some-shop.com/success\\"}",
+            "sign": "26bcafa4b08dcfa901e47caa977c75ed286bb4390fb8271eb96e2f46470ffbf7"
       }"""
 
       import json
@@ -234,23 +219,23 @@ tags:
       # Resulting notification string (in format application/x-www-form-urlencoded)
       if content_type == 'application/x-www-form-urlencoded':
           request_body_form_urlencoded = (
-              'shop_id=100&shop_order_id=Shop+order+id&description=Some+payment&s'
+              'shop_id=1&shop_order_id=The+store's+order+ID&description=Your+payment+description&s'
               'hop_amount=20.0&shop_refund=19.0&shop_currency=840&payment_id=100&'
-              'client_price=20.0&ps_currency=840&payway=some_payway_name&ps_data='
+              'client_price=20.0&ps_currency=840&payway=payway_example&ps_data='
               '%7B%22amount%22%3A+%2220.00%22%2C+%22bill_id%22%3A+%22i_100%22%2C+'
               '%22ccy%22%3A+%22USD%22%2C+%22command%22%3A+%22bill%22%2C+%22commen'
               't%22%3A+%22%5Bi_100%5D+Payment%22%2C+%22error%22%3A+0%2C+%22prv_na'
               'me%22%3A+%22PaymentSystem%22%2C+%22ps_payer_account%22%3A+%2297151'
               '0000000%22%2C+%22status%22%3A+%22paid%22%2C+%22user%22%3A+%22tel%3'
-              'A%2B971510000000%22%7D&created=2026-05-16T15%3A38%3A07&updated=202'
+              'A%2B150010000097%22%7D&created=2026-08-27T15%3A38%3A07&updated=202'
               '0-08-21T15%3A38%3A07&status=success&addons=%7B%22callback_rejected'
               '_url%22%3A+%22https%3A%2F%2Fsome-shop.com%2Fcallback-rejected-url%'
               '22%2C+%22callback_url%22%3A+%22https%3A%2F%2Fsome-shop.com%2Fcallb'
               'ack-url%22%2C+%22description%22%3A+%22Some+payment%22%2C+%22failed'
               '_url%22%3A+%22https%3A%2F%2Fsome-shop.com%2Ffail%22%2C+%22phone%22'
-              '%3A+%22971510000000%22%2C+%22success_url%22%3A+%22https%3A%2F%2Fso'
-              'me-shop.com%2Fsuccess%22%7D&sign=1d51960a52a6c7e8cf957d1a22ad2b326'
-              '3603bace013facc335dd1429ecb4e97'
+              '%3A+%22150010000097%22%2C+%22success_url%22%3A+%22https%3A%2F%2Fso'
+              'me-shop.com%2Fsuccess%22%7D&sign=26bcafa4b08dcfa901e47caa977c75ed2'
+              '86bb4390fb8271eb96e2f46470ffbf7'
           )
           from urllib.parse import parse_qsl
           parsed_request = dict(parse_qsl(request_body_form_urlencoded))
@@ -258,7 +243,7 @@ tags:
       print(parsed_request)
       # {
       #     'shop_id': 100,
-      #     'shop_order_id': 'Shop order id',
+      #     'shop_order_id': 'The store's order ID',
       #     'description': 'Some payment',
       #     'shop_amount': 20.0,
       #     'shop_refund': 19.0,
@@ -266,13 +251,13 @@ tags:
       #     'payment_id': '100',
       #     'client_price': 20.0,
       #     'ps_currency': 840,
-      #     'payway': 'some_payway_name',
-      #     'ps_data': '{"amount": "20.00", "bill_id": "i_100", "ccy": "USD", "command": "bill", "comment": "[i_100] Payment", "error": 0, "prv_name": "PaymentSystem", "ps_payer_account": "971510000000", "status": "paid", "user": "tel:+971510000000"}',
-      #     'created': '2026-05-16T15:38:07',
-      #     'updated': '2026-05-16T15:38:07',
+      #     'payway': 'payway_example',
+      #     'ps_data': '{"amount": "20.00", "bill_id": "i_100", "ccy": "USD", "command": "bill", "comment": "[i_100] Payment", "error": 0, "prv_name": "PaymentSystem", "ps_payer_account": "150010000097", "status": "paid", "user": "tel:+150010000097"}',
+      #     'created': '2026-08-27T15:38:07',
+      #     'updated': '2026-08-27T15:38:07',
       #     'status': 'success',
-      #     'addons': '{"callback_rejected_url": "https://example.com/callback-rejected-url", "callback_url": "https://example.com/callback-url", "description": "Some payment", "failed_url": "https://example.com/fail", "phone": "971510000000", "success_url": "https://example.com/success"}',
-      #     'sign': '1d51960a52a6c7e8cf957d1a22ad2b3263603bace013facc335dd1429ecb4e97',
+      #     'addons': '{"callback_rejected_url": "https://example.com/callback-rejected-url", "callback_url": "https://example.com/callback-url", "description": "Your payment description", "failed_url": "https://example.com/fail", "phone": "150010000097", "success_url": "https://example.com/success"}',
+      #     'sign': '5d3ea83ec487fb1a769942b348741eafa5b124073d9bca968977731b724ee397',
       # }
 
       # Let's get a list of sorted keys for signature generation
@@ -318,34 +303,13 @@ tags:
 
       You can withdraw funds regularly from the payment instrument of the buyer without repeated entry of details and without participation of the payer to initiate the next payment. With such way of funds withdrawal the user should only confirm the first payment or linking of the payment instrument, all subsequent payments will be made without his/her participation.
 
-      You can use two methods for payment token issue:
+      To create the first payment in the chain and to generate the payment token, pass `issue_payment_token: true` in [invoice/create](#operation/post-invoice-create) or [invoice/hold](#operation/post-invoice-hold).
 
-      1. Without payment:
-         1. To issue a token without payment use the request [payment-token/create](#operation/post-create-payment-token)
-         2. You will get a payment token and token issue status:
-              * in object `payment_token` `{"token": "<payment token>", "status": "<token issue status>"}` in response to the request [payment-token/create](#operation/post-create-payment-token), if no additional actions of the user are required
-              * in parameters `token`, `status` in [notification](#tag/callbacks/Payment-token-notification-example)
-              * you can also request [current issue status](#operation/post-get-status-payment-token) - in response you will get the object `payment_token` `{"token": "<payment token>", "status": "<token issue status>"}`
-            
-              <div class="warning">Parameter <strong>token</strong> may be used for payment only if you get the status <strong>SUCCESS</strong></div>
-            
-         3. In each subsequent payment it is necessary to additionally submit in the request body [invoice/create](#operation/post-invoice-create) the received earlier `token: "<payment token>"`.
-         
-            <div class="warning">In response to the request you will get parameters <strong>method: null</strong> and <strong>url: null</strong>. This means that the payer should not be redirected to the payment scheme page.</div>
+      You will then receive a [notification](#tag/callbacks) with `payment_token` inside `ps_data`. Save that token for subsequent charges.
 
-            Payment result will come in [notification](#tag/callbacks).
-         
-      2. In the course of payment:
-         1. To create the first payment in the chain and to generate the payment token it is necessary to transfer in the request [invoice/create](#operation/post-invoice-create) or [invoice/hold](#operation/post-invoice-hold) the additional parameter `issue_payment_token: true`.
-         2. Then you will receive a [notification](#tag/callbacks) with additional parameter `payment_token` in the field `ps_data: {"payment_token": "<payment token>", ...}`. Save payment token `payment_token`.
-         
-            <div class="warning">Parameter <strong>payment_token</strong> will be transferred only in case of a successful transaction.</div>
-         
-         3. In each subsequent payment it is necessary to additionally submit in the request body [invoice/create](#operation/post-invoice-create) the received earlier `payment_token: "<payment token>"`.
-         
-            <div class="warning">In response to the request you will get parameters <strong>method: null</strong> and <strong>url: null</strong>. This means that the payer should not be redirected to the payment scheme page.</div>
-         
-            Payment result will come in [notification](#tag/callbacks).
+      <div class="warning">Parameter <strong>payment_token</strong> is sent only after a successful transaction.</div>
+
+      For each following payment, submit `payment_token: "<payment token>"` in [invoice/create](#operation/post-invoice-create). The response may return `method: null` and `url: null` when no redirect to the payment page is required; the final result arrives via [notification](#tag/callbacks).
   - name: invoice-statuses
     x-displayName: Invoice statuses
     description: |
@@ -358,7 +322,7 @@ tags:
       |  3    | Payment system has failed to create the payment                     | &minus;   |
       |  4    | Payment has been successful                                         | &plus;    |
       |  5    | Payment system has failed to receive a payment notice               | &minus;   |
-      |  6    | M5 payment system has rejected the operation               | &plus;    |
+      |  6    | M4 payment system has rejected the operation               | &plus;    |
       |  8    | Funds for the invoice are withheld (held) by the payment system     | &minus;   |
   - name: withdraw-create
     x-displayName: Payout creation
@@ -391,7 +355,7 @@ tags:
 
       If you receive the `Read timeout` error at the payout creation request, then you need to make a status request by the shop's payout number [withdraw/shop_payment_status](#operation/post-withdraw-shop-payment-status) and if the response returns an error stating the absence of such a payout, you can repeat the request to create a payout. If the payout status is returned in the response, then it means that it was created and you need to focus on this status.
 
-      Reason for payout rejection ([getting status 6](#tag/withdraw-statuses)) can be clarified through the support service <a href="mailto:support@m5solutions.io">support@m5solutions.io</a>.
+      Reason for payout rejection ([getting status 6](#tag/withdraw-statuses)) can be clarified through the support service <a href="mailto:support@m4solutions.io">support@m4solutions.io</a>.
 
       ### Securing payouts idempotency
 
@@ -420,7 +384,7 @@ tags:
   - name: errors-list
     x-displayName: List of possible errors
     description: |
-      ### List of possible M5 API errors
+      ### List of possible M4 API errors
 
       You can use this data to control the logic of your application, analyze and solve problems, output messages
       to the user, and for any other purpose. For example, if you received `error_code: 11` in the response, then most likely you
@@ -450,7 +414,7 @@ tags:
       | 10         | Invalid request parameters                                                                                                                                                          | &plus;  |
       | 11         | Shop has not been found                                                                                                                                                             | &plus;  |
       | 12         | Shop is not active                                                                                                                                                                  | &plus;  |
-      | 13         | Account has not been found in M5 system                                                                                                                                     | &plus;  |
+      | 13         | Account has not been found in M4 system                                                                                                                                     | &plus;  |
       | 14         | Account status does not allow operations                                                                                                                                            | &plus;  |
       | 15         | Request from the current IP has been rejected                                                                                                                                       | &plus;  |
       | 16         | Currency exchange rate has not been found                                                                                                                                           | &plus;  |
@@ -503,179 +467,6 @@ tags:
       | 1108       | The payment token has expired. Obtain a new token and retry the request.                                                                                                            | &plus;  |
       | 1109       | Transaction rejected by MPI. Please repeat the payment using another bank card.                                                                                                     | &plus;  |
       | 2000       | Another error                                                                                                                                                                       | &plus;  |
-  - name: disbursement-bank-codes
-    x-displayName: Disbursement Bank Codes
-    description: |-
-      # Indonesia Bank Codes
-
-      Supported Bank Codes to be used in the Disbursement Request:
-
-      | Bank Code | Bank Name |
-      |-----------|-----------|
-      | 002 | BRI |
-      | 003 | Bank Ekspor Indonesia |
-      | 008 | Bank Mandiri |
-      | 009 | Bank Negara Indonesia |
-      | 011 | Bank Danamon |
-      | 013 | Bank Permata |
-      | 014 | BCA |
-      | 016 | BII Maybank |
-      | 019 | Bank Panin |
-      | 020 | Bank Arta Niaga Kencana |
-      | 022 | CIMB Niaga |
-      | 023 | Bank UOB Indonesia |
-      | 026 | Bank Lippo |
-      | 028 | Bank OCBC NISP |
-      | 030 | American Express Bank LTD |
-      | 031 | Citibank |
-      | 032 | JPMorgan Chase Bank |
-      | 033 | Bank of America Merill-Lynch |
-      | 034 | Bank ING Indonesia Bank |
-      | 036 | Bank China Construction Bank Indonesia |
-      | 037 | Bank Artha Graha Internasional |
-      | 039 | Credit Agricole Indosuez Bank |
-      | 040 | Bangkok Bank |
-      | 042 | MUFG Bank |
-      | 045 | Bank Sumitomo Mitsui Indonesia |
-      | 046 | Bank DBS Indonesia |
-      | 047 | Bank Resona Perdania |
-      | 048 | Bank Mizuho Indonesia |
-      | 050 | Standard Chartered |
-      | 052 | ABN Amro Bank |
-      | 053 | Keppel Tatlee Buana Bank |
-      | 054 | Bank Capital Indonesia |
-      | 057 | Bank BNP Paribas |
-      | 060 | Bank Rabobank International Indonesia |
-      | 061 | ANZ Indonesia |
-      | 067 | Deutsche Bank AG |
-      | 068 | Bank Woori Indonesia |
-      | 069 | Bank OF China |
-      | 076 | Bank Bumi Arta |
-      | 087 | Bank HSBC Indonesia |
-      | 088 | Bank Antardaerah |
-      | 089 | Bank Rabobank |
-      | 093 | IFI Bank |
-      | 095 | Bank Jtrust Indonesia |
-      | 097 | Bank Mayapada International |
-      | 110 | BJB |
-      | 111 | Bank DKI |
-      | 112 | Bank DIY |
-      | 112S | Bank DIY Syariah |
-      | 113 | Bank Jateng |
-      | 114 | Bank Jatim |
-      | 114S | Bank Jatim Syariah |
-      | 115 | Bank Jambi |
-      | 115S | Bank Jambi Syariah |
-      | 116 | Bank Aceh |
-      | 117 | Bank Sumut |
-      | 117S | Bank Sumut Syariah |
-      | 118 | Bank Nagari |
-      | 118S | Bank Nagari Syariah |
-      | 119 | Bank Riau |
-      | 120 | Bank Sumsel Babel |
-      | 120S | Bank Sumsel Babel Syariah |
-      | 121 | Bank Lampung |
-      | 122 | Bank Kalsel |
-      | 122S | Bank Kalsel Syariah |
-      | 123 | Bank Kalbar |
-      | 123S | Bank Kalbar Syariah |
-      | 124 | Bank Kaltim |
-      | 124S | Bank Kaltim Syariah |
-      | 125 | Bank Kalteng |
-      | 126 | Bank Sulselbar |
-      | 126S | Bank Sulselbar Syariah |
-      | 127 | Bank Sulut |
-      | 128 | Bank NTB |
-      | 129 | Bank Bali |
-      | 130 | Bank NTT |
-      | 131 | Bank Maluku |
-      | 132 | Bank Papua |
-      | 133 | Bank Bengkulu |
-      | 134 | Bank Sulteng |
-      | 135 | Bank Sultra |
-      | 137 | Bank Banten |
-      | 145 | Bank Nusantara Parahyangan |
-      | 146 | Bank Of India Indonesia |
-      | 147 | Bank Muamalat |
-      | 151 | Bank Mestika |
-      | 152 | Bank Shinhan |
-      | 153 | Bank Sinarmas |
-      | 157 | Bank Maspion Indonesia |
-      | 159 | Hagakita Bank |
-      | 161 | Bank Ganesha |
-      | 162 | Bank Windu Kentjana Int |
-      | 164 | Bank ICBC Indonesia |
-      | 166 | Harmoni International Bank |
-      | 167 | Bank QNB Indonesia |
-      | 200 | BTN |
-      | 200S | BTN Syariah |
-      | 212 | Bank Woori Saudara |
-      | 213 | Bank SMBC Indonesia |
-      | 405 | Bank Victoria Syariah |
-      | 422 | Bank Syariah BRI |
-      | 425 | BJB Syariah |
-      | 426 | Bank Mega |
-      | 441 | Bank Bukopin |
-      | 451 | Bank Syariah Indonesia |
-      | 459 | Bank Bisnis Internasional |
-      | 466 | Bank Andara |
-      | 472 | Bank Jasa Jakarta |
-      | 484 | Bank KEB Hana |
-      | 485 | Bank MNC |
-      | 490 | Bank Neo Commerce |
-      | 491 | Bank Mitra Niaga |
-      | 494 | Bank Raya Indonesia |
-      | 498 | Bank SBI Indonesia |
-      | 501 | BCA Digital |
-      | 503 | Bank National Nobu |
-      | 506 | Bank Mega Syariah |
-      | 513 | Bank INA |
-      | 517 | Bank Panin Syariah |
-      | 520 | Bank Prima |
-      | 521 | Bank Syariah Bukopin |
-      | 523 | Bank Sahabat Sampoerna |
-      | 526 | Bank Oke Indonesia |
-      | 531 | Anglomas International Bank |
-      | 535 | Bank Seabank Indonesia |
-      | 536 | Bank BCA Syariah |
-      | 542 | Bank Jago |
-      | 542S | Bank Jago Syariah |
-      | 547 | Bank BTPN Syariah |
-      | 548 | Bank Multiarta Sentosa |
-      | 553 | Bank Hibank Indonesia |
-      | 555 | Bank Index |
-      | 559 | Bank CNB |
-      | 562 | Superbank |
-      | 564 | Bank Mandiri Taspen |
-      | 566 | Bank Victoria International |
-      | 567 | Allo Bank |
-      | 600 | ATMB LSB |
-      | 688 | BPR KS |
-      | 722 | Bank Danamon UUS |
-      | 724 | Bank DKI Syariah |
-      | 725 | Bank Jateng Syariah |
-      | 726 | BPD Jawa Timur UUS |
-      | 727 | BPD Kalimantan Barat UUS |
-      | 728 | BPD Kalimantan Selatan UUS |
-      | 729 | BPD Kalimantan Timur UUS |
-      | 731 | Bank OCBC NISP UUS |
-      | 732 | BPD Sumatera Barat UUS |
-      | 733 | BPD Sumut UUS |
-      | 734 | Bank Sinarmas Syariah |
-      | 735 | BPD Sulselbar UUS |
-      | 736 | Bank Pembangunan Daerah (BPD DIY) Syariah |
-      | 777 | Finnet |
-      | 867 | Bank Eka |
-      | 945 | Bank IBK Indonesia |
-      | 947 | Aladin Syariah Bank |
-      | 949 | Bank CTBC Indonesia |
-      | 950 | Bank Commonwealth |
-      | 987 | ATMB Plus |
-      | dana | DANA |
-      | gopay | GoPay |
-      | linkaja | LinkAja |
-      | ovo | OVO |
-      | shopeepay | Shopeepay | 
 paths:
   /invoice/try:
     post:
@@ -701,7 +492,7 @@ paths:
             schema:
               $ref: '#/components/schemas/InvoicePayload.v1'
       security:
-        - RequestSignature: []
+        - Request signature: []
       tags:
         - invoice-create
       description: |
@@ -749,7 +540,7 @@ paths:
                             $ref: '#/components/schemas/InvoiceCreateInfo.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - RequestSignature: []
+        - Request signature: []
       requestBody:
         content:
           application/json:
@@ -788,7 +579,7 @@ paths:
         For the data specified in the example response below, the following HTML form will be obtained:
 
         ```html
-        <form method="POST" action="https://checkout.domain.com/form/">
+        <form method="POST" action="https://example.checkout.com/form/">
           <input name="transaction_id" value="1231" />
           <input name="payment_type" value="card" />
           <input name="fail_url" value="https://example.com/payment/?status=fail" />
@@ -806,7 +597,7 @@ paths:
         redirect_url = '{url}?{parameters}'.format(url=data['url'], parameters=urllib.parse.urlencode(data['data']))
         ```
 
-        An example of the formed URL: `https://checkout.domain.com/form/?transaction_id=1231&payment_type=card&fail_url=https%3A%2F%2Fexample.com%2Fpayment%2F%3Fstatus%3Dfail&success_url=https%3A%2F%2Fexample.com%2Fpayment%2F%3Fstatus%3Dsuccess`
+        An example of the formed URL: `https://example.checkout.com/form/?transaction_id=1231&payment_type=card&fail_url=https%3A%2F%2Fexample.com%2Fpayment%2F%3Fstatus%3Dfail&success_url=https%3A%2F%2Fexample.com%2Fpayment%2F%3Fstatus%3Dsuccess`
 
         <div class="attention">
         Please note that the parameters <code>failed_url</code>, <code>success_url</code>, <code>callback_url</code>, <code>callback_rejected_url</code> specified in the shop settings have priority over those specified in request. If you want to use unique url for each request, you need to inform the manager about it.
@@ -874,7 +665,7 @@ paths:
                             $ref: '#/components/schemas/InvoiceCheckData.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - RequestSignature: []
+        - Request signature: []
       tags:
         - invoice-create
       requestBody:
@@ -902,7 +693,7 @@ paths:
                             $ref: '#/components/schemas/InvoiceCreateInfo.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - RequestSignature: []
+        - Request signature: []
       requestBody:
         content:
           application/json:
@@ -925,7 +716,7 @@ paths:
 
         <div class="warning">
         When funds are held, merchants are required to confirm or cancel the payment within 5 days.
-        M5 service does not automatically confirm or cancel held payments after this period.
+        M4 service does not automatically confirm or cancel held payments after this period.
 
         The funds holding period cannot exceed 5 days.
         </div>
@@ -959,7 +750,7 @@ paths:
                             $ref: '#/components/schemas/InvoiceChargeInfo.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - RequestSignature: []
+        - Request signature: []
       requestBody:
         content:
           application/json:
@@ -1000,7 +791,7 @@ paths:
                             $ref: '#/components/schemas/InvoiceUnholdInfo.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - RequestSignature: []
+        - Request signature: []
       requestBody:
         content:
           application/json:
@@ -1035,7 +826,7 @@ paths:
         * `shop_id`
         </div>
       security:
-        - RequestSignature: []
+        - Request signature: []
       requestBody:
         content:
           application/json:
@@ -1067,7 +858,7 @@ paths:
         * `shop_refund_id`
         </div>
       security:
-        - RequestSignature: []
+        - Request signature: []
       requestBody:
         content:
           application/json:
@@ -1107,7 +898,7 @@ paths:
         * `shop_id`
         </div>
       security:
-        - RequestSignature: []
+        - Request signature: []
       requestBody:
         content:
           application/json:
@@ -1134,108 +925,6 @@ paths:
                   - $ref: '#/components/schemas/ResponseFail.v1'
       tags:
         - invoice-refund
-  /payment-token/create:
-    post:
-      summary: Payment token issue
-      operationId: post-create-payment-token
-      description: |
-        Method of payment token issue without payment
-
-        <div class="success">
-        <p>Fields participating in forming the request signature:</p>
-
-        * `payway`
-        * `shop_id`
-        * `shop_request_id`
-        </div>
-      security:
-        - RequestSignature: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PaymentTokenCreatePayload.v1'
-      responses:
-        '200':
-          description: ''
-          x-summary: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaymentTokenCreateResponse.v1'
-      tags:
-        - invoice-recurrent
-  /payment-token/status:
-    post:
-      summary: Payment token issue status request
-      operationId: post-get-status-payment-token
-      description: |-
-        Method to get the status and up-to-date information on token issue. This request is available only for tokens issued without payment (using [payment-token/create/](#operation/post-create-payment-token))
-
-        <div class="success">
-        <p>Fields participating in forming the request signature by shop_request_id:</p>
-
-        * `now`
-        * `shop_id`
-        * `shop_request_id`
-        </div>
-
-        <div class="success">
-        <p>Fields participating in forming the request signature by token:</p>
-
-        * `now`
-        * `token`
-        </div>
-      security:
-        - RequestSignature: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PaymentTokenStatusPayload.v1'
-      responses:
-        '200':
-          description: ''
-          x-summary: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaymentTokenStatusResponse.v1'
-      tags:
-        - invoice-recurrent
-  /payment-token/delete:
-    post:
-      summary: Payment token deletion
-      operationId: post-delete-payment-token
-      description: |-
-        Payment token deletion method. This request is available only for tokens issued without payment (using [payment-token/create/](#operation/post-create-payment-token))
-
-        <div class="warning">
-        <p>Please note that you can only delete a successfully issued token, i.e. in SUCCESS status</p>
-        </div>
-
-        <div class="success">
-        <p>Fields involved in request signature generation:</p>
-
-        * `token`
-        </div>
-      security:
-        - RequestSignature: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PaymentTokenDeletePayload.v1'
-      responses:
-        '200':
-          description: ''
-          x-summary: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaymentTokenDeleteResponse.v1'
-      tags:
-        - invoice-recurrent
   /withdraw/try:
     post:
       summary: Payout preliminary calculation
@@ -1284,7 +973,7 @@ paths:
       tags:
         - withdraw-create
       security:
-        - RequestSignature: []
+        - Request signature: []
       requestBody:
         content:
           application/json:
@@ -1311,7 +1000,7 @@ paths:
                             $ref: '#/components/schemas/CheckAccountResponse.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - RequestSignature: []
+        - Request signature: []
       tags:
         - withdraw-create
       requestBody:
@@ -1381,13 +1070,13 @@ paths:
       tags:
         - withdraw-create
       security:
-        - RequestSignature: []
+        - Request signature: []
   /withdraw/status:
     post:
-      summary: Payout status request by ID of the payout created in M5 system
+      summary: Payout status request by ID of the payout created in M4 system
       operationId: post-withdraw-status
       description: |
-        To get the status and up-to-date information of payments by the M5 system ID.
+        To get the status and up-to-date information of payments by the M4 system ID.
 
         <div class="success">
         <p>Fields involved in request signature generation:</p>
@@ -1411,7 +1100,7 @@ paths:
                             $ref: '#/components/schemas/StatusResponse.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - RequestSignature: []
+        - Request signature: []
       tags:
         - withdraw-create
       requestBody:
@@ -1448,7 +1137,7 @@ paths:
                             $ref: '#/components/schemas/StatusResponse.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - RequestSignature: []
+        - Request signature: []
       tags:
         - withdraw-create
       requestBody:
@@ -1470,7 +1159,7 @@ paths:
         * `shop_id`
         </div>
       security:
-        - RequestSignature: []
+        - Request signature: []
       requestBody:
         content:
           application/json:
@@ -1499,7 +1188,7 @@ paths:
         * `shop_id`
         </div>
       security:
-        - RequestSignature: []
+        - Request signature: []
       requestBody:
         content:
           application/json:
@@ -1523,9 +1212,9 @@ paths:
         - other-shop-methods
 components:
   securitySchemes:
-    RequestSignature:
+    Request signature:
       type: apiKey
-      in: header
+      in: requestBody
       name: sign
       description: |+
         Every API request must be signed so that we can identify your account.
@@ -1534,13 +1223,13 @@ components:
 
         ```json
         {
-            "shop_id": 79834981,
-            "shop_order_id" : "117",
-            "amout": "299.45",
+            "shop_id": 1520,
+            "shop_order_id" : "5b0efa8a-153b-4421-abac-2aba4d772a86",
+            "amout": "6320.91",
             "currency": 840,
-            "payway": "wallet_usd",
-            "description": "Testing invoices",
-            "sign": "3399051237fb80c0f2421a6f89dcb160a576eac7efcdb6cb34626773a8a4abde"
+            "payway": "card_invoice_usd",
+            "description": "Payment for shop_id=1520",
+            "sign": "77a6f7a30876d480d4e771d08cb83800dd5cb874664c77e515ffc052b20293c6"
         }
         ```
         <div class="warning">
@@ -1569,18 +1258,18 @@ components:
 
         3. The line for generating the SHA256 hash will be as follows:
 
-        `"299.45:840:wallet_usd:79834981:117account-secret-key"`
+        `"6320.91:840:card_invoice_usd:1520:5b0efa8a-153b-4421-abac-2aba4d772a86account-secret-key"`
 
         Where `account-secret-key` is the secret identification key for your account. You can request a key from the support service.
 
         4. Let's get a hash expression of the generated line using Python code:
 
         ```python
-        >>> string_to_sign = '299.45:840:wallet_usd:79834981:117account-secret-key'
+        >>> string_to_sign = '6320.91:840:card_invoice_usd:1520:5b0efa8a-153b-4421-abac-2aba4d772a86account-secret-key'
         >>> import hashlib
         >>> sign = hashlib.sha256(string_to_sign.encode()).hexdigest()
         >>> print(sign)
-        'e20aa5afde0a62800102d4c7ed5e7ec77b3eb48966337166668af88e3549f1a1'
+        '77a6f7a30876d480d4e771d08cb83800dd5cb874664c77e515ffc052b20293c6'
         ```
 
         <div class="success">
@@ -1588,6 +1277,34 @@ components:
         </div>
 
   schemas:
+    InvoiceCreatePayload.v1:
+      oneOf:
+        - $ref: '#/components/schemas/InvoiceCreateCard.v1'
+        - $ref: '#/components/schemas/InvoiceCreateFPS.v1'
+    InvoiceCreateFPS.v1:
+      title: Faster payment system
+      allOf:
+        - $ref: '#/components/schemas/InvoiceCreateBase.v1'
+        - type: object
+          properties:
+            account:
+              type: string
+              description: Payer account (phone number)
+              example: '79102471377'
+          required:
+            - account
+      example:
+        shop_id: 1520
+        shop_order_id: "5b0efa8a-153b-4421-abac-2aba4d772a86"
+        amount: "6320.91"
+        currency: 840
+        payway: "card_invoice_usd"
+        account: "79102471377"
+        description: "Invoice for payment"
+        failed_url: "https://your-domain.com/status/failed/"
+        success_url: "https://your-domain.com/status/success/"
+        callback_url: "https://your-domain.com/status/callback/"
+        callback_rejected_url: "https://your-domain.com/status/rejected/"
     InvoiceCallBack:
       oneOf:
         - $ref: '#/components/schemas/InvoiceCallBack.v1'
@@ -1602,8 +1319,8 @@ components:
       properties:
         shop_id:
           type: integer
-          example: 904
-          description: Unique shop identifier in the M5 system.
+          example: 1520
+          description: Unique shop identifier in the M4 system.
       required:
         - shop_id
     ShopOrderID.v1:
@@ -1612,7 +1329,7 @@ components:
       properties:
         shop_order_id:
           type: string
-          example: 45503626-9a10-4581-9b76-90d0cd95c05d
+          example: 5b0efa8a-153b-4421-abac-2aba4d772a86
           description: Order ID in your system. *Must be unique for each new invoice.*
           maxLength: 255
       required:
@@ -1622,10 +1339,10 @@ components:
       type: string
       description: |
         Amount received or withdrawn.
-        Example: `"105.45"`
+        Example: `"227.34"`
       exclusiveMinimum: true
       minimum: 0
-      example: '105.45'
+      example: '6320.91'
     Currency.v1:
       type: number
       description: |
@@ -1639,7 +1356,7 @@ components:
       pattern: ^[A-Za-z_,\[\]]+$
     PaywayInvoice.v1:
       title: Payment way
-      example: wallet_usd
+      example: card_payway_usd
       allOf:
         - $ref: '#/components/schemas/Payway.v1'
         - description: |
@@ -1655,7 +1372,7 @@ components:
         description:
           type: string
           description: Optional payment description.
-          example: 'Description of example invoice'
+          example: 'Payment for shop_id=1520'
           maxLength: 255
     InvoicePayload.v1:
       title: Invoice issue parameters
@@ -1754,11 +1471,11 @@ components:
         payer_price:
           type: number
           description: Amount due, in the currency of the payway.
-          example: 150.1
+          example: 227.56
         paymethod_id:
           type: integer
           description: Payment method identifier
-          example: 5
+          example: 4
         paymethod_name:
           type: string
           description: Payment method name
@@ -1790,7 +1507,7 @@ components:
       title: Error response
       type: object
       description: |
-        # Error response
+        # Error response 😎
       allOf:
         - $ref: '#/components/schemas/Response.v1'
         - properties:
@@ -1801,7 +1518,7 @@ components:
             result:
               example: false
             message:
-              example: Shop (id = 905) is not active
+              example: Shop (id = 1520) is not found
             error_code:
               example: 12
     InvoiceCreateUrls.v1:
@@ -1811,22 +1528,22 @@ components:
           type: string
           description: URL where the payer will be redirected after unsuccessful invoice payment.
           format: uri
-          example: https://example.com/status/failed/
+          example: https://your-domain.com/status/failed/
         success_url:
           type: string
           format: uri
-          example: https://example.com/status/success/
+          example: https://your-domain.com/status/success/
           description: URL where the payer will be redirected after successful invoice payment.
         callback_url:
           type: string
           description: URL where the notification about successful payment will be sent.
           format: uri
-          example: https://example.com/status/callback/
+          example: https://your-domain.com/status/callback/
         callback_rejected_url:
           type: string
           description: URL where the notification about unsuccessful payment will be sent.
           format: uri
-          example: https://example.com/status/rejected/
+          example: https://your-domain.com/status/rejected/
     InvoiceCreateBase.v1:
       allOf:
         - $ref: '#/components/schemas/InvoicePayload.v1'
@@ -1837,7 +1554,7 @@ components:
         client_ip:
           type: string
           format: IPv4
-          example: 127.0.0.1
+          example: 192.168.1.1
           description: Payer IP address
     InvoiceCreateExpiresAt.v1:
       type: object
@@ -1846,7 +1563,7 @@ components:
           title: <ISO 8601>
           type: string
           format: date-time
-          example: '2026-12-30T00:00:00Z'
+          example: '2026-06-01T00:00:00Z'
           description: |
             Invoice expiration date in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
             If invoice is not paid until this date, subsequent invoice payment will not be possible.
@@ -1863,7 +1580,7 @@ components:
               description: |-
                 Bank card details should be sent when:
                 - You have a PCI DSS certificate
-                - You do not need a page on the M5 side to get card details from the buyer
+                - You do not need a page on the M4 side to get card details from the buyer
 
                 In case the payment way to the cards is used and the card data is not transmitted, the response to the request will contain a link to redirect the buyer to enter the card details.
                 Also, `method`, `url` and `data` will be filled in if the user needs to be redirected to pass the 3DSecure check.
@@ -1871,26 +1588,26 @@ components:
                 number:
                   type: string
                   description: Bank Card number
-                  example: '4814651800997171'
+                  example: '5395455214142417'
                 cardholder:
                   type: string
                   pattern: ' ^[0-9A-Z-/ _.'']{1,26}$'
                   description: Cardholder name. If name is not provided default value «Card Holder» will be used
-                  example: ELIZABETH JONES
+                  example: ADAM SMITH
                 expiry_month:
                   type: string
                   pattern: ' (^0?[1-9]{1}$)|(^1[012]{1}$)'
                   description: Bank card expiration month
-                  example: '11'
+                  example: '08'
                 expiry_year:
                   type: string
                   description: Bank card expiration year
                   pattern: ^\d{2}$
-                  example: '34'
+                  example: '30'
                 cvv:
                   type: string
                   description: Secure code
-                  example: '518'
+                  example: '184'
                   minLength: 3
                   maxLength: 4
               required:
@@ -1900,7 +1617,7 @@ components:
                 - cvv
             issue_payment_token:
               type: boolean
-              example: true
+              example: false
               description: This parameter is used to generate a payment token. More details [invoice/recurrent](#tag/invoice-recurrent)
             client_info:
               type: object
@@ -1984,23 +1701,6 @@ components:
                   example: '05'
           required:
             - client_ip
-    InvoiceCreatePaymentToken.v1:
-      title: Invoice issue by payment token
-      allOf:
-        - $ref: '#/components/schemas/InvoiceCreateBase.v1'
-        - type: object
-          properties:
-            payment_token:
-              type: string
-              format: uuid
-              description: Payment token received from a previous successful payment when `issue_payment_token` was used
-              example: 4f6cf35x-2c4y-483z-a0a9-158621f77a21
-          required:
-            - payment_token
-    InvoiceCreatePayload.v1:
-      oneOf:
-        - $ref: '#/components/schemas/InvoiceCreateCard.v1'
-        - $ref: '#/components/schemas/InvoiceCreatePaymentToken.v1'
     InvoiceCreateInfo.v1:
       title: Invoice payment form
       type: object
@@ -2023,8 +1723,8 @@ components:
               type: string
         id:
           type: number
-          example: 32105
-          description: Unique invoice identifier in M5 system
+          example: 340198
+          description: Unique invoice identifier in M4 system
         method:
           type: string
           nullable: true
@@ -2037,7 +1737,7 @@ components:
           type: string
           format: uri
           nullable: true
-          example: https://checkout.domain.com/form/
+          example: https://example.checkout.com/form/
           description: URL subject to which the contents of the `data` field should be sent by the `method`. If `null` is received, then you do not need to send it.
         payment_token:
           type: object
@@ -2048,19 +1748,31 @@ components:
               type: string
               format: uuid
               description: Payment token
-              example: 4f6cf35x-2c4y-483z-a0a9-158621f77a21
+              example: 980fba62-94d9-4489-bf4c-75b43eecf134
             expires_at:
               title: <ISO 8601>
               nullable: true
               type: string
               format: date-time
-              example: '2025-12-27T20:07:02'
+              example: '2026-10-21T16:48:22'
               description: Date and time of payment token expiration
             status:
-              $ref: '#/components/schemas/PaymentTokenStatusOnCreate.v1'
+              type: string
+              enum:
+                - CREATED
+                - WAITING
+                - SUCCESS
+                - FAILED
+              example: SUCCESS
+              description: |-
+                Token issue status on invoice create:
+                  * `CREATED` - request for token issue created
+                  * `WAITING` - request is waiting for user's actions
+                  * `SUCCESS` - token successfully created
+                  * `FAILED` - token creation failed
             account:
               type: string
-              example: 411111XXXXXX1111
+              example: 412103XXXXXX7701
               description: Masked number of the account (card or wallet) for which the token was issued
             card_info:
               type: object
@@ -2104,7 +1816,7 @@ components:
         now:
           type: string
           format: date-time
-          example: '2020-04-21T20:07:02'
+          example: '2026-05-24T16:35:42'
           description: Request date and time.
       required:
         - now
@@ -2117,13 +1829,13 @@ components:
       type: string
       title: Payment description
       description: Payment description
-      example: Invoice for user_id=7766
+      example: Invoice for shop_id=1520
     ErrorCode.v1:
-      title: M5 API error code
+      title: M4 API error code
       type: number
       format: integer
       example: 0
-      description: 'M5 API error code. `0` in cases there is no any error. Other codes can be found here: [Description of error codes](#tag/errors-list)'
+      description: 'M4 API error code. `0` in cases there is no any error. Other codes can be found here: [Description of error codes](#tag/errors-list)'
       required:
         - error_code
     BaseInvoiceStatus.v1:
@@ -2136,7 +1848,7 @@ components:
             status: {}
             payment_id:
               type: integer
-              description: Unique identifier of the issued invoice in M5 system
+              description: Unique identifier of the issued invoice in M4 system
               example: 12
             ps_data:
               type: string
@@ -2146,14 +1858,14 @@ components:
                 Other fields depend on the payment system.
 
                 In case of payment tokens, the `payment_token` parameter will also be represented in this field.
-              example: '{"ps_payer_account": "411111XXXXXX1111", "bill_id": "7766", "amount": "190.99", "status": "success"}'
+              example: '{"ps_payer_account": "412103XXXXXX7701", "bill_id": "7766", "amount": "190.99", "status": "success"}'
             ps_currency:
               allOf:
                 - description: Currency of the payway used by the user for payment
                 - $ref: '#/components/schemas/Currency.v1'
             payway:
               allOf:
-                - description: Payway in M5 system used by the user for payment
+                - description: Payway in M4 system used by the user for payment
                 - $ref: '#/components/schemas/Payway.v1'
             description:
               $ref: '#/components/schemas/InvoiceDescription.v1'
@@ -2161,18 +1873,18 @@ components:
               type: string
               description: Invoice creation date and time
               format: date-time
-              example: '2020-04-21T20:07:02'
+              example: '2026-05-24T16:35:42'
             updated:
               type: string
               description: Invoice status change date and time (payment or rejection)
               format: date-time
-              example: '2020-04-21T20:09:02'
+              example: '2026-04-21T20:09:02'
             processed:
               type: string
               description: Date and time of invoice transfer to the final status
               format: date-time
               nullable: true
-              example: '2020-04-21T20:09:03'
+              example: '2026-04-21T20:09:03'
             shop_currency:
               allOf:
                 - description: Shop account currency
@@ -2181,12 +1893,12 @@ components:
               type: number
               format: float
               description: Invoice amount, in the invoice currency
-              example: 267
+              example: 359.01
             client_price:
               type: number
               format: float
               description: Amount paid by the client, in the payment system currency.
-              example: 272.34
+              example: 365
             error_code:
               $ref: '#/components/schemas/ErrorCode.v1'
       required:
@@ -2230,7 +1942,7 @@ components:
               type: number
               format: float
               description: Amount credited to the shop's balance, in currency `settlement_currency`
-              example: 98
+              example: 104
             settlement_currency:
               type: number
               description: Shop balance currency
@@ -2253,7 +1965,7 @@ components:
           type: string
           nullable: true
           format: date-time
-          example: '2026-12-30T03:00:00+03:00'
+          example: '2026-01-01T03:00:00+03:00'
           description: |
             Invoice expiration date in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
             If invoice is not paid until this date, subsequent invoice payment will not be possible.
@@ -2276,21 +1988,6 @@ components:
           * `SUCCESS` - token successfully created
           * `FAILED` - token creation failed
           * `DELETED` - token deleted
-    PaymentTokenStatusOnCreate.v1:
-      title: Payment token status on invoice create
-      type: string
-      enum:
-        - CREATED
-        - WAITING
-        - SUCCESS
-        - FAILED
-      example: SUCCESS
-      description: |-
-        Token issue status on invoice create:
-          * `CREATED` - request for token issue created
-          * `WAITING` - request is waiting for user's actions
-          * `SUCCESS` - token successfully created
-          * `FAILED` - token creation failed
     InvoiceCheckData.v1:
       title: Invoice status verification
       allOf:
@@ -2304,7 +2001,8 @@ components:
             processed:
               type: string
               format: date-time
-              example: '2020-04-21T20:07:02'
+              nullable: true
+              example: '2026-05-24T16:35:42'
               description: Date and time of issuing the final invoice status
             payment_token:
               type: object
@@ -2314,18 +2012,18 @@ components:
                   type: string
                   format: uuid
                   description: Payment token
-                  example: 4f6cf35x-2c4y-483z-a0a9-158621f77a21
+                  example: 980fba62-94d9-4489-bf4c-75b43eecf134
                 expires_at:
                   title: <ISO 8601>
                   type: string
                   format: date-time
-                  example: '2025-12-27T20:07:02'
+                  example: '2026-04-21T20:07:02'
                   description: Date and time of payment token expiration
                 status:
                   $ref: '#/components/schemas/PaymentTokenStatus.v1'
                 account:
                   type: string
-                  example: 411111XXXXXX1111
+                  example: 412103XXXXXX7701
                   description: Masked number of the account (card or wallet) for which the token was issued
                 card_info:
                   type: object
@@ -2343,7 +2041,7 @@ components:
                       description: Issuing bank
                     payment_system:
                       type: string
-                      example: VISA
+                      example: MASTERCARD
                       description: Payment system type
                     funding_source:
                       type: string
@@ -2351,7 +2049,7 @@ components:
                       description: Card type
                     payment_system_product:
                       type: string
-                      example: GOLD
+                      example: PLATINUM
                       description: Card category
               required:
                 - token
@@ -2359,18 +2057,16 @@ components:
           required:
             - is_unique
     InvoiceHoldPayload.v1:
-      oneOf:
-        - $ref: '#/components/schemas/InvoiceCreateCard.v1'
-        - $ref: '#/components/schemas/InvoiceCreatePaymentToken.v1'
+      $ref: '#/components/schemas/InvoiceCreateCard.v1'
     InvoiceID.v1:
       title: Payment ID
       type: object
       properties:
         invoice_id:
           type: number
-          description: Invoice ID in the M5 system.
+          description: Invoice ID in the M4 system.
           format: integer
-          example: 32105
+          example: 108744
       required:
         - invoice_id
     InvoiceChargePayload.v1:
@@ -2391,7 +2087,7 @@ components:
               type: number
               format: float
               description: Amount credited to the shop's balance, in currency `settlement_currency`
-              example: 101
+              example: 104
             settlement_currency:
               type: number
               description: Shop balance currency
@@ -2434,11 +2130,11 @@ components:
         id:
           type: integer
           description: Payment method ID.
-          example: 14
+          example: 15
         name:
           type: string
           description: Payment method name.
-          example: card-usd
+          example: card_payment_usd
         rating:
           type: integer
           description: Payment method rating.
@@ -2450,7 +2146,7 @@ components:
       required:
         - id
         - name
-        - rating
+        - raiting
         - payways
     FeeConfig.v1:
       title: Settings for the distribution of commission between the shop and the payer.
@@ -2460,14 +2156,14 @@ components:
           type: number
           description: A commission percentage, which is set under the agreement for the shop.
           format: float
-          example: 3.0
+          example: 3.8
           minimum: 0
           maximum: 100
         fix:
           type: number
           description: A fixed commission rate, which is set under the agreement for the shop.
           format: float
-          example: 2.1
+          example: 1.4
           minimum: 0
       required:
         - percent
@@ -2478,7 +2174,7 @@ components:
       properties:
         alias:
           type: string
-          example: example_payway_card_usd
+          example: payway_card_usd_example
           description: Payway alias.
         currency:
           $ref: '#/components/schemas/Currency.v1'
@@ -2510,7 +2206,7 @@ components:
             Distribution of percentage commission between the payer and the shop.
              0 - for the payer, 1 - for the shop.
           format: float
-          example: 0.1
+          example: 0.05
           minimum: 0
           maximum: 1
         fix_part:
@@ -2541,14 +2237,14 @@ components:
                 phone:
                   comment:
                     en: Enter your phone number in international format without «+»
-                  example: '971510000000'
+                  example: '150010000097'
                   label:
                     en: 'Phone number:'
                   prefix: +
                   regex: ^(91|994|82|372|375|374|44|998|972|66|90|81|1|507|7|77|380|371|370|996|9955|992|373|84)[0-9]{6,14}$
             id:
               type: integer
-              example: 111
+              example: 99
               description: Payway ID
             fee_part_config:
               $ref: '#/components/schemas/FeePartConfig.v1'
@@ -2586,7 +2282,7 @@ components:
       properties:
         shop_refund_id:
           type: string
-          example: aeee94a6-4e52-4a6f-ae63-f2159eb35add
+          example: dc4ad503-d97a-4fec-adeb-ba51d43a7191
           description: The refund ID in your system. *Must be unique for each new refund.*
           maxLength: 255
       required:
@@ -2596,7 +2292,7 @@ components:
       type: string
       description: |
         Refund amount, calculated in `currency`.
-      example: '91.00'
+      example: '95.50'
       exclusiveMinimum: true
       minimum: 0
     InvoiceRefundPayload.v1:
@@ -2614,11 +2310,11 @@ components:
               type: string
               description: The URL to which the callback will be sent after the refund transitions to the final status.
               format: uri
-              example: https://example.com/status/callback/
+              example: https://your-domain.com/status/callback/
             description:
               type: string
               description: Optional description of the refund.
-              example: 'Refund for order #1'
+              example: 'Refund payment for shop_id=1520'
               maxLength: 255
           required:
             - shop_id
@@ -2669,18 +2365,18 @@ components:
               type: string
               description: Date and time when the refund was created
               format: date-time
-              example: '2020-04-21T20:07:02'
+              example: '2026-05-24T16:35:42'
             processed_at:
               nullable: true
               type: string
               description: Date and time of actual processing of the refund in the payment system
               format: date-time
-              example: '2020-04-21T20:08:02'
+              example: '2026-04-21T20:08:02'
             settlement_amount:
               type: string
               minimum: 0
               description: Amount of write-off from the shop balance, in currency `settlement_currency`
-              example: '91.00'
+              example: '95.50'
             settlement_currency:
               type: string
               description: Shop balance currency. Alphabetic currency identifier in accordance with [ISO 4217](https://wikipedia.org/wiki/ISO_4217).
@@ -2738,483 +2434,6 @@ components:
         - shop_id
         - invoice_id
         - now
-    PaymentTokenCreateBase.v1:
-      allOf:
-        - type: object
-          properties:
-            shop_id:
-              type: integer
-              minimum: 1
-              description: Unique shop identifier in M5. You will receive it in the letter when registering in the system
-              example: 904
-            shop_request_id:
-              type: string
-              maxLength: 255
-              description: Token issue request identifier in your system. Should be unique for each new request
-              example: 1dd25c42-81e7-11ed-a1eb-0242ac120002
-            payway:
-              type: string
-              maxLength: 150
-              pattern: ^[A-Za-z_,\[\]]+$
-              example: wallet_usd
-              description: |-
-                Payment way for which token will be issued.
-                The list of all payment ways available to the shop may be obtained in two ways:
-                  * Execute API request "Receipt of input payment methods" [shop_input_config/shop](#operation/post-shop-input-config-shop).
-                  * Request the list from the support service
-          required:
-            - shop_id
-            - shop_request_id
-            - payway
-    PaymentTokenCreateCard.v1:
-      title: Bank card token issue
-      allOf:
-        - $ref: '#/components/schemas/PaymentTokenCreateBase.v1'
-        - type: object
-          properties:
-            payment_method_data:
-              type: object
-              description: Data to issue the token under a certain payment way - payway"
-              properties:
-                card:
-                  type: object
-                  description: Information on the bank card
-                  properties:
-                    number:
-                      type: string
-                      description: Bank card number
-                      example: '4916651071478312'
-                    cardholder:
-                      type: string
-                      description: Name of the card holder, if the parameter was not submitted - «Card Holder» value will be used
-                      pattern: ^[0-9A-Z-/ _.']{1,26}$
-                      example: JENNIFER GREEN
-                    expiry_month:
-                      type: string
-                      description: Month of bank card expiration
-                      pattern: '^0?[1-9]{1}$)|(^1[012]{1}$'
-                      example: '08'
-                    expiry_year:
-                      type: string
-                      description: Year of bank card expiration
-                      pattern: ^\d{2}$
-                      example: '27'
-                    cvv:
-                      type: string
-                      description: Security code
-                      example: '876'
-                      pattern: ^\d{3, 4}$
-                  required:
-                    - number
-                    - expiry_month
-                    - expiry_year
-                    - cvv
-              required:
-                - card
-            redirect:
-              type: object
-              description: Data to return the user to shop page
-              properties:
-                failed_url:
-                  type: string
-                  description: URL to which the user will be redirected after unsuccessful token issue
-                  format: uri
-                  example: https://example.com/redirect/?status=failed
-                success_url:
-                  type: string
-                  description: URL to which the user will be redirected after successful token issue
-                  format: uri
-                  example: https://example.com/redirect/?status=success
-            callback:
-              type: object
-              description: Data to receive automatic notifications on token issue status
-              properties:
-                rejected_url:
-                  type: string
-                  description: URL to which the notification on unsuccessful token issue will be sent
-                  format: uri
-                  example: https://example.com/callback/?status=rejected
-                success_url:
-                  type: string
-                  description: URL to which the notification on successful token issue will be sent
-                  format: uri
-                  example: https://example.com/callback/?status=success
-          required:
-            - payment_method_data
-    PaymentTokenCreatePayload.v1:
-      oneOf:
-        - $ref: '#/components/schemas/PaymentTokenCreateCard.v1'
-    PaymentTokenCreateResponseCard.v1:
-      title: Successful response, bank card
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ResponseOK.v1'
-        - properties:
-            data:
-              type: object
-              description: Information on payment token issue status
-              example:
-                payment_token:
-                  token: a8ab95e1-4566-4fe9-93ea-bd83698ff5a0
-                  payway: wallet_usd
-                  expires_at: null
-                  status: WAITING
-                  account: 411111XXXXXX1111
-                  error_code: 0
-                  card_info: null
-                confirmation_data:
-                  data:
-                    MD: 38e3244e2bcc4ed7a29aaa886a0e5374
-                    PaReq: YPhfxL294rkdSCu7zBd6yArmgEuNhyuhCC6UNeNoql9OmgYbGcAQHkNxwZ6x0j2kLdoGytuJ9GfwxxkGLzZp5VdlQfhDd5QSK9XE68IrmgBJ1DxSsozMvGC9zGAxm2rDYqcA5HYuCQ66ocOw7P5sKQZphxm2DqoYBwji9zInFRIaTabC4UXzCjWbWT5NNpmz0ULXiOBmX6JB9BpP85UCrwWPC8Ee97gX7KRyOfZoe5Z65aKF7WLNFS5L3VffcV0YVyLKe2dXgrs3fACGrVM7dZmDFB7NiJL0yqgv5oYPjDSniZAkrlbShjILNLspVdzLwRKygvLOfEhhKvqmnoOTkNw4qfvgj4inrHnR3EcO3CozcdFh6T23sA7uP7LLZ3cHfAayfw9VpssdfeKorwajz2XdOOIrl45cXKnNLVEivyFbbUJF8wUq8bkkZXyTQGCKhqB819w2MuFu
-                    TermUrl: https://card-api-test.example.com/v1/invoice/finish3ds/38e3244e2bcc4ed7a29aaa886a0e5374
-                  method: POST
-                  url: https://example.com/acs/auth/start.do
-              properties:
-                payment_token:
-                  type: object
-                  description: Payment token data
-                  properties:
-                    token:
-                      type: string
-                      format: uuid
-                      description: Payment token
-                      example: 4f6cf35x-2c4y-483z-a0a9-158621f77a21
-                    payway:
-                      type: string
-                      maxLength: 150
-                      pattern: ^[A-Za-z_,\[\]]+$
-                      example: wallet_usd
-                      description: Payment way for which token is issued.
-                    expires_at:
-                      title: <ISO 8601>
-                      nullable: true
-                      type: string
-                      format: date-time
-                      example: '2025-12-27T20:07:02'
-                      description: Date and time of payment token expiration
-                    status:
-                      $ref: '#/components/schemas/PaymentTokenStatus.v1'
-                    account:
-                      type: string
-                      example: 411111XXXXXX1111
-                      description: Masked card number for which token is issued
-                    error_code:
-                      type: integer
-                      description: Payment scheme error code. If this value is more than `0`, it means that the payment scheme error occurred when confirming the token or confirmation failed. [Error codes description](#tag/errors-list)
-                    card_info:
-                      type: object
-                      nullable: true
-                      description: Information on the bank card
-                      properties:
-                        is_valid:
-                          type: boolean
-                          example: true
-                          description: Result of card verification, `true` means that the card is available for purchases
-                        issuing_country:
-                          type: string
-                          maxLength: 3
-                          minLength: 3
-                          description: Issuer's country code. Alphabetical country identifier under [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3).
-                          example: GBR
-                        issuing_bank:
-                          type: string
-                          example: Example Bank
-                          description: Issuing bank
-                        payment_system:
-                          type: string
-                          example: VISA
-                          description: Payment scheme type
-                        funding_source:
-                          type: string
-                          example: DEBIT
-                          description: Card type
-                        payment_system_product:
-                          type: string
-                          example: GOLD
-                          description: Card category
-                      required:
-                        - is_valid
-                  required:
-                    - token
-                    - payway
-                    - status
-                    - account
-                    - expires_at
-                    - error_code
-                confirmation_data:
-                  type: object
-                  nullable: true
-                  description: Additional requirement to complete payment instrument authentication
-                  properties:
-                    data:
-                      type: object
-                      description: Data for sending using `method` to `url`. The fields below are given as an example, actual field names and their quantity will differ depending on the payment scheme
-                      properties:
-                        key1:
-                          type: string
-                          example: value1
-                        key2:
-                          type: string
-                          example: value2
-                    method:
-                      type: string
-                      enum:
-                        - GET
-                        - POST
-                      description: Method of `data` sending to `url`
-                      example: GET
-                    url:
-                      type: string
-                      description: URL to which it is necessary to send the content of `data` field using `method`
-                      format: uri
-                      example: https://example.com/acs/auth/start.do
-    PaymentTokenCreateResponseFail.v1:
-      title: Response with error
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ResponseFail.v1'
-        - properties:
-            data:
-              type: object
-              description: Information on payment token issue status
-              nullable: true
-              example: null
-    PaymentTokenCreateResponse.v1:
-      oneOf:
-        - $ref: '#/components/schemas/PaymentTokenCreateResponseCard.v1'
-        - $ref: '#/components/schemas/PaymentTokenCreateResponseFail.v1'
-    PaymentTokenStatusPayloadShopRequestID.v1:
-      title: Request by SHOP_REQUEST_ID
-      allOf:
-        - type: object
-          properties:
-            shop_id:
-              type: integer
-              minimum: 1
-              description: Unique shop identifier in M5. You will receive it in the letter when registering in the system
-              example: 904
-            shop_request_id:
-              type: string
-              maxLength: 255
-              description: Token issue request identifier in your system. Should be unique for each new request
-              example: 1dd25c42-81e7-11ed-a1eb-0242ac120002
-            now:
-              type: string
-              format: date-time
-              example: '2025-12-27T20:07:02'
-              description: Date and time of request
-          required:
-            - shop_id
-            - shop_request_id
-            - now
-    PaymentTokenStatusPayloadToken.v1:
-      title: Request by token
-      allOf:
-        - type: object
-          properties:
-            token:
-              type: string
-              format: uuid
-              description: Payment token
-            now:
-              type: string
-              format: date-time
-              example: '2025-12-27T20:07:02'
-              description: Date and time of request
-          required:
-            - token
-            - now
-    PaymentTokenStatusPayload.v1:
-      oneOf:
-        - $ref: '#/components/schemas/PaymentTokenStatusPayloadShopRequestID.v1'
-        - $ref: '#/components/schemas/PaymentTokenStatusPayloadToken.v1'
-    PaymentTokenStatusResponseSuccess.v1:
-      title: Successful response
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ResponseOK.v1'
-        - properties:
-            data:
-              type: object
-              description: Information on payment token issue status
-              example:
-                payment_token:
-                  token: a8ab95e1-4566-4fe9-93ea-bd83698ff5a0
-                  expires_at: '2025-12-27T20:07:02'
-                  status: SUCCESS
-                  account: 411111XXXXXX1111
-                  shop_request_id: 45503626-9a10-4581-9b76-90d0cd95c05d
-                  error_code: 0
-                  card_info:
-                    is_valid: true
-                    issuing_country: GBR
-                    issuing_bank: Example Bank
-                    payment_system: VISA
-                    funding_source: DEBIT
-                    payment_system_product: Platinum...
-              properties:
-                payment_token:
-                  type: object
-                  description: Payment token data
-                  properties:
-                    token:
-                      type: string
-                      format: uuid
-                      description: Payment token
-                      example: 4f6cf35x-2c4y-483z-a0a9-158621f77a21
-                    expires_at:
-                      title: <ISO 8601>
-                      type: string
-                      nullable: true
-                      format: date-time
-                      example: '2025-12-27T20:07:02'
-                      description: Date and time of payment token expiration
-                    status:
-                      $ref: '#/components/schemas/PaymentTokenStatus.v1'
-                    account:
-                      type: string
-                      example: 411111XXXXXX1111
-                      description: Masked card number for which token is issued
-                    shop_request_id:
-                      type: string
-                      maxLength: 255
-                      description: Token issue request identifier in your system. Should be unique for each new request
-                    error_code:
-                      type: integer
-                      description: Payment scheme error code. If this value is more than `0`, it means that the payment scheme error occurred when confirming the token or confirmation failed. [Error codes description](#tag/errors-list)
-                    card_info:
-                      type: object
-                      nullable: true
-                      description: Information on the bank card
-                      properties:
-                        is_valid:
-                          type: boolean
-                          example: true
-                          description: Result of card verification, `true` means that the card is available for purchases
-                        issuing_country:
-                          type: string
-                          maxLength: 3
-                          minLength: 3
-                          description: Issuer's country code. Alphabetical country identifier under [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3).
-                          example: GBR
-                        issuing_bank:
-                          type: string
-                          example: Example Bank
-                          description: Issuing bank
-                        payment_system:
-                          type: string
-                          example: VISA
-                          description: Payment scheme type
-                        funding_source:
-                          type: string
-                          example: DEBIT
-                          description: Card type
-                        payment_system_product:
-                          type: string
-                          example: GOLD
-                          description: Card category
-                  required:
-                    - token
-                    - payway
-                    - status
-                    - account
-                    - shop_request_id
-                    - expires_at
-                    - error_code
-    PaymentTokenStatusResponseFail.v1:
-      title: Response with error
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ResponseFail.v1'
-        - properties:
-            data:
-              type: object
-              description: Information on payment token issue status
-              nullable: true
-              example: null
-    PaymentTokenStatusResponse.v1:
-      oneOf:
-        - $ref: '#/components/schemas/PaymentTokenStatusResponseSuccess.v1'
-        - $ref: '#/components/schemas/PaymentTokenStatusResponseFail.v1'
-    PaymentTokenDeletePayload.v1:
-      title: Payment token deletion
-      allOf:
-        - type: object
-          properties:
-            token:
-              type: string
-              format: uuid
-              description: Payment token
-              example: 4f6cf35x-2c4y-483z-a0a9-158621f77a21
-          required:
-            - token
-    PaymentTokenDeleteResponseSuccess.v1:
-      title: Successful response
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ResponseOK.v1'
-        - properties:
-            data:
-              title: Information on payment token deletion
-              type: object
-              nullable: true
-              example:
-                payment_token:
-                  token: a8ab95e1-4566-4fe9-93ea-bd83698ff5a0
-                  deleted_at: '2026-05-19T20:07:02'
-                  status: DELETED
-                  error_code: 0
-              properties:
-                payment_token:
-                  type: object
-                  description: Payment token data
-                  properties:
-                    token:
-                      type: string
-                      format: uuid
-                      description: Payment token
-                      example: 4f6cf35x-2c4y-483z-a0a9-158621f77a21
-                    deleted_at:
-                      title: <ISO 8601>
-                      type: string
-                      format: date-time
-                      example: '2025-12-27T20:07:02'
-                      description: Date and time of payment token deletion
-                    status:
-                      title: Payment token status
-                      type: string
-                      enum:
-                        - SUCCESS
-                        - DELETED
-                      example: SUCCESS
-                      description: |-
-                        Token statuses:
-                          * `SUCCESS` - the current status of the token and means that the token is not deleted
-                          * `DELETED` - token deleted
-                    error_code:
-                      type: integer
-                      description: Payment scheme error code. If this value is more than `0`, it means that the payment scheme error occurred when deletion the token or deletion failed. [Error codes description](#tag/errors-list)
-                  required:
-                    - token
-                    - status
-                    - error_code
-              required:
-                - payment_token
-    PaymentTokenDeleteResponseFail.v1:
-      title: Response with error
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ResponseFail.v1'
-        - properties:
-            data:
-              title: Information on payment token deletion
-              type: object
-              nullable: true
-              example: null
-    PaymentTokenDeleteResponse.v1:
-      oneOf:
-        - $ref: '#/components/schemas/PaymentTokenDeleteResponseSuccess.v1'
-        - $ref: '#/components/schemas/PaymentTokenDeleteResponseFail.v1'
     ShopCurrency.v1:
       type: number
       x-examples:
@@ -3228,7 +2447,7 @@ components:
       example: 840
     PaywayWithdraw.v1:
       title: Payment way
-      example: wallet_usd
+      example: card_payway_usd
       allOf:
         - $ref: '#/components/schemas/Payway.v1'
         - description: |
@@ -3264,7 +2483,7 @@ components:
       description: |-
         Account of the recipient of funds in the payment system or service.
         For example, phone, card number or steam login.
-      example: '971510000000'
+      example: '150010000097'
     AmountType.v1:
       title: Amount type
       type: string
@@ -3302,7 +2521,7 @@ components:
       example:
         account:
           regex: \d{9,15}$
-          title: 'Account number, for example: 971510000000'
+          title: 'Account number, for example: 150010000097'
     TryResponse.v1:
       title: Result of a preliminary calculation of the payout
       type: object
@@ -3312,7 +2531,7 @@ components:
         payee_receive:
           type: number
           description: Amount to be received on the account in `ps_currency` currency.
-          example: 100
+          example: 150
         ps_currency:
           allOf:
             - description: Payway currency for withdrawal
@@ -3322,12 +2541,12 @@ components:
         shop_write_off:
           type: number
           description: Amount to be debited from the shop in `shop_currency` currency.
-          example: '104'
+          example: '160'
     AccountDetails.v1:
       title: Detailed account information
       type: object
       example:
-        name: Ivan
+        name: Adam
       description: Detailed account information. If additional parameters were transferred in the `/withdraw/try` response in the `account_info_config` field, they must be transferred in the `account_details` field.
     CheckAccountPayload.v1:
       title: Account verification parameters
@@ -3356,8 +2575,8 @@ components:
           nullable: true
           description: Additional information returned from the service provider. It can be displayed to the payer, as it often contains their personal information, for example, the full name of the account holder.
           example:
-            first_name: Ivan
-            last_name: Ivanov
+            first_name: Adam
+            last_name: Smith
         result:
           type: boolean
           example: true
@@ -3399,199 +2618,14 @@ components:
               $ref: '#/components/schemas/AccountDetails.v1'
             description:
               type: string
-              example: It's payout for my friend
+              example: Payout to my worker
               description: Description of the payout. Transferred in the payway provided that the payment system has this function.
               maxLength: 255
           required:
             - account
             - shop_payment_id
-    PyyplPayCreatePayload.v1:
-      title: Payout to Pyypl Wallet
-      allOf:
-        - $ref: '#/components/schemas/ShopID.v1'
-        - type: object
-          properties:
-            shop_currency:
-              type: number
-              x-examples:
-                Dollars: 840
-              description: Currency of the shop balance from which the funds will be debited (in accordance with [ISO 4217](https://wikipedia.org/wiki/ISO_4217)).
-              enum:
-                - 840
-              title: Currency identifier
-              example: 840
-            payway:
-              $ref: '#/components/schemas/PaywayWithdraw.v1'
-            amount:
-              $ref: '#/components/schemas/Amount.v1'
-        - type: object
-          properties:
-            amount_type:
-              title: Amount type
-              type: string
-              description: |-
-                Indicates the amount type, possible values:  
-                  `ps_amount` –  the exact amount indicated in the `amount` will be sent to a beneficiary card or wallet. Credit currency will correspond to the currency of the `payway`,  
-                  `shop_amount` – the exact amount indicated in the `amount` will be written off from the shop balance, beneficiary will receive this amount minus transaction fees. Debit currency will correspond to the currency of the `shop_currency`.
-              enum:
-                - ps_amount
-                - shop_amount
-              example: ps_amount
-            payway:
-              title: Payment way
-              example: pyypl_usd_payway
-              type: string
-              maxLength: 150
-              pattern: ^[A-Za-z_,\[\]]+$
-              description: |-
-                Payment direction for payout.
-                Currency of receipt depends on the specified payment way.
-
-                There are two ways to get a list of all payment ways available to the shop:
-                * Execute the API request "Receiving payment methods for payouts" [shop_output_config/shop](#operation/post-shop-output-config-shop).
-                * Request a register from the support service.
-            account:
-              type: string
-              title: Recipient account
-              description: |-
-                Pyypl account phone number of the funds recipient.
-                The format must be E.164 compliant.
-
-                If the phone number is not provided, the payout will be created as the voucher that can be scanned by any Pyypl User to receive the funds.
-              example: '+254712345678'
-            shop_payment_id:
-              type: string
-              description: |-
-                Order ID in your system.
-                *Must be unique for each new payment.*
-              example: 4440D705-947A-4C6E-9A2E-4A383B2CD574
-            account_details:
-              title: Detailed account information
-              type: object
-              description: Additional information for withdraw. Required in cases for withdraws via Pyypl wallet. In all other cases, must be null.
-              properties:
-                success_url:
-                  type: string
-                  format: uri
-                  description: A URL defined by the merchant where the app will redirect in case of a successful payout
-                  example: https://example.com/success
-                failure_url:
-                  type: string
-                  format: uri
-                  description: A URL defined by the merchant where the app will redirect in case of a failure
-                  example: https://example.com/failure
-              required:
-                - success_url
-                - failure_url
-            description:
-              type: string
-              example: It's payout for my friend
-              description: Description of the payout. Transferred in the payway provided that the payment system has this function.
-              maxLength: 255
-          required:
-            - shop_currency
-            - payway
-            - amount
-            - account
-            - shop_payment_id
-            - account_details
-            - amount_type
-    CryptoPayoutsPayload.v1:
-      title: Payouts to QWIK or crypto wallets
-      allOf:
-        - $ref: '#/components/schemas/ShopID.v1'
-        - type: object
-          properties:
-            shop_currency:
-              type: string
-              title: Currency identifier
-              description: Payment cryptocurrency.
-              example: USDT
-              enum:
-                - USDT
-            payway:
-              $ref: '#/components/schemas/PaywayWithdraw.v1'
-            amount:
-              title: Amount received or withdrawn.
-              type: string
-              description: |
-                Amount received or withdrawn.
-                Example: `"98.76"`
-              exclusiveMinimum: false
-              minimum: 0.1
-              example: '105.45'
-            amount_type:
-              $ref: '#/components/schemas/AmountType.v1'
-            account:
-              type: string
-              description: Recipient's email address in the QWIK system or TRON (TRC20) wallet.
-              example: TWXkewqSqhnuUee53CNc1FF9HGvGj9k6TE
-            shop_payment_id:
-              type: string
-              description: |-
-                Order ID in your system.
-                *Must be unique for each new payment.*
-              example: 4440D705-947A-4C6E-9A2E-4A383B2CD574
-            account_details:
-              title: Detailed account information
-              type: object
-              description: Detailed account information. If additional parameters were transferred in the `/withdraw/try` response in the `account_info_config` field, they must be transferred in the `account_details` field.
-              properties:
-                chain:
-                  type: string
-                  enum:
-                    - TRON
-                  description: Name for the blockchain structure. If the value is not provided, the default value "TRON" is set.
-                  example: TRON
-            description:
-              type: string
-              example: It's payout for my friend
-              description: Description of the payout. Transferred in the payway provided that the payment system has this function.
-              maxLength: 255
-          required:
-            - shop_currency
-            - payway
-            - amount
-            - amount_type
-            - account
-            - shop_payment_id
-    IndonesiaAccountDetails.v1:
-      title: Detailed account information for Indonesia
-      type: object
-      example:
-        bank_id: '008'
-        email: example@email.com
-      description: Detailed account information for Indonesian payouts. If additional parameters were transferred in the `/withdraw/try` response in the `account_info_config` field, they must be transferred in the `account_details` field.
-      properties:
-        bank_id:
-          type: string
-          maxLength: 255
-          description: Please refer to the [Disbursement Bank Codes](#tag/disbursement-bank-codes) to find the bank code for the recipient's bank account.
-          example: '008'
-        email:
-          type: string
-          example: example@email.com
-          pattern: ' ^(?=^.{5,100}$)[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-          description: Email address of the recipient
-      required:
-        - bank_id
-    IndonesiaPayCreatePayload.v1:
-      title: Payouts to Indonesia
-      description: This schema is used for making payouts to Indonesian bank accounts and digital wallets.
-      allOf:
-        - $ref: '#/components/schemas/CommonCreatePayload.v1'
-        - type: object
-          properties:
-            account_details:
-              $ref: '#/components/schemas/IndonesiaAccountDetails.v1'
-          required:
-            - account_details
     CreatePayload.v1:
-      oneOf:
-        - $ref: '#/components/schemas/CommonCreatePayload.v1'
-        - $ref: '#/components/schemas/PyyplPayCreatePayload.v1'
-        - $ref: '#/components/schemas/CryptoPayoutsPayload.v1'
-        - $ref: '#/components/schemas/IndonesiaPayCreatePayload.v1'
+      $ref: '#/components/schemas/CommonCreatePayload.v1'
     Status.v1:
       title: Payment status
       type: integer
@@ -3635,7 +2669,7 @@ components:
           $ref: '#/components/schemas/Status.v1'
         redirect_info:
           type: object
-          description: Actual only for cases with Pyypl wallet. In all other cases, null is returned.
+          description: Optional redirect parameters for the payment scheme. Often `null` when no client redirect is required.
           nullable: true
           properties:
             data:
@@ -3645,10 +2679,10 @@ components:
               properties:
                 key1:
                   type: string
-                  example: value1
+                  example: example_1
                 key2:
                   type: string
-                  example: value2
+                  example: example_2
             method:
               type: string
               enum:
@@ -3660,7 +2694,7 @@ components:
               type: string
               description: URL to which it is necessary to send the content of `data` field using `method`
               format: uri
-              example: https://checkout.domain.com/form/
+              example: https://example.checkout.com/form/
           required:
             - data
             - method
@@ -3683,8 +2717,8 @@ components:
           properties:
             withdraw_id:
               type: integer
-              example: 111
-              description: Payout (withdraw) ID in M5 system.
+              example: 121
+              description: Payout (withdraw) ID in M4 system.
           required:
             - withdraw_id
       description: ''
@@ -3694,7 +2728,7 @@ components:
       properties:
         shop_payment_id:
           type: string
-          example: 45503626-9a10-4581-9b76-90d0cd95c05d
+          example: 5b0efa8a-153b-4421-abac-2aba4d772a86
           description: Unique payment identifier of the shop.
       required:
         - shop_payment_id
@@ -3705,7 +2739,7 @@ components:
           properties:
             id:
               type: integer
-              description: Payout ID in M5 system
+              description: Payout ID in M4 system
             status:
               $ref: '#/components/schemas/Status.v1'
             ps_currency:
@@ -3730,11 +2764,11 @@ components:
               description: Unique payment identifier of the shop.
             rrn:
               type: string
-              example: 7a8ebcd5-d811-44c6-84bd-af0b54ed2b59
+              example: c16d5ef3-540e-42c3-b172-bb4f15a92f31
               description: Payout ID in the payment system.
             bank_transaction_id:
               type: string
-              example: 19562196-cb30-40c9-aaff-389bb2c7f8b0
+              example: 5aa56edd-b8c0-417b-ad9d-2cd42693e7c0
               description: Payout ID in the beneficiary's bank system.
             error_code:
               $ref: '#/components/schemas/ErrorCode.v1'
@@ -3810,7 +2844,7 @@ components:
           description: Frozen funds on the balance, for example, for a created payment that is being processed
           type: number
           format: float
-          example: 10000.1
+          example: 574190.63
           minimum: 0
     ShopBalancesResponseData.v1:
       title: Shop balances in different currencies available during payments
@@ -3867,21 +2901,21 @@ components:
         - addons
         - shop_refund
       example:
-        shop_order_id: 45503626-9a10-4581-9b76-90d0cd95c05d
-        shop_id: 904
+        shop_order_id: 5b0efa8a-153b-4421-abac-2aba4d772a86
+        shop_id: 1
         status: success
-        payment_id: 12
+        payment_id: 91
         ps_data: '{"ps_payer_account": "455610XXXXXX2032"}'
         ps_currency: 840
-        payway: wallet_usd
-        description: Invoice for user_id=7766
-        created: '2026-06-18T17:19:36'
-        updated: '2026-06-18T17:19:37'
-        processed: '2026-06-18T17:19:37'
+        payway: card_payway_usd
+        description: Invoice for shop_id=1520
+        created: '2026-11-01T17:19:36'
+        updated: '2026-11-01T17:19:37'
+        processed: '2026-11-01T17:19:37'
         shop_currency: 840
-        shop_amount: 100
-        shop_refund: 98
-        client_price: 100
+        shop_amount: 200
+        shop_refund: 104
+        client_price: 200
         error_code: 0
         sign: string
         addons: '{"comment": "test"}'
@@ -3908,21 +2942,21 @@ components:
             - settlement_currency
             - settlement_rate
           example:
-            shop_order_id: 45503626-9a10-4581-9b76-90d0cd95c05d
-            shop_id: 904
+            shop_order_id: 5b0efa8a-153b-4421-abac-2aba4d772a86
+            shop_id: 1
             status: success
-            payment_id: 12
+            payment_id: 91
             ps_data: '{"ps_payer_account": "455610XXXXXX2032"}'
             ps_currency: 840
-            payway: wallet_usd
-            description: Invoice for user_id=7766
-            created: '2026-06-18T17:19:36'
-            updated: '2026-06-18T17:19:37'
-            processed: '2026-06-18T17:19:37'
+            payway: card_payway_usd
+            description: Invoice for shop_id=1520
+            created: '2026-11-01T17:19:36'
+            updated: '2026-11-01T17:19:37'
+            processed: '2026-11-01T17:19:37'
             shop_currency: 840
-            shop_amount: 100
-            shop_refund: 98
-            client_price: 100
+            shop_amount: 200
+            shop_refund: 104
+            client_price: 200
             settlement_currency: 978
             settlement_rate: 1
             error_code: 0
@@ -3971,16 +3005,16 @@ components:
         - sign
         - addons
       example:
-        shop_refund_id: aeee94a6-4e52-4a6f-ae63-f2159eb35add
+        shop_refund_id: dc4ad503-d97a-4fec-adeb-ba51d43a7191
         status: SUCCESS
-        invoice_id: 32105
-        amount: '91.00'
+        invoice_id: 108744
+        amount: '95.50'
         currency: USD
         error_code: 0
-        created_at: '2026-06-18T17:21:15'
-        processed_at: '2026-06-18T17:21:16'
+        created_at: '2026-11-01T17:21:15'
+        processed_at: '2026-11-01T17:21:16'
         sign: string
-        addons: '{"description": "Refund for order #1", "callback_url": "https://example.com/status/callback/"}'
+        addons: '{"description": "Refund payment for shop_id=1520", "callback_url": "https://your-domain.com/status/callback/"}'
     RefundCallBackWithConversionData.v1:
       title: Refund callback with conversion data
       allOf:
@@ -4018,19 +3052,19 @@ components:
             - sign
             - addons
           example:
-            shop_refund_id: aeee94a6-4e52-4a6f-ae63-f2159eb35add
+            shop_refund_id: dc4ad503-d97a-4fec-adeb-ba51d43a7191
             status: SUCCESS
-            invoice_id: 32105
-            amount: '91.00'
+            invoice_id: 108744
+            amount: '95.50'
             currency: USD
             error_code: 0
-            created_at: '2026-06-18T17:21:15'
-            processed_at: '2026-06-18T17:21:16'
-            settlement_amount: '91.00'
+            created_at: '2026-11-01T17:21:15'
+            processed_at: '2026-11-01T17:21:16'
+            settlement_amount: '95.50'
             settlement_currency: USD
             settlement_rate: '1.0'
             sign: string
-            addons: '{"description": "Refund for order #1", "callback_url": "https://example.com/status/callback/"}'
+            addons: '{"description": "Refund payment for shop_id=1520", "callback_url": "https://your-domain.com/status/callback/"}'
 x-tagGroups:
   - name: Payments
     tags:
@@ -4049,4 +3083,3 @@ x-tagGroups:
     tags:
       - other-shop-methods
       - errors-list
-      - disbursement-bank-codes
