@@ -2422,7 +2422,7 @@ components:
       required:
         - id
         - name
-        - raiting
+        - rating
         - payways
     FeeConfig.v1:
       title: Settings for the distribution of commission between the shop and the payer.
@@ -2764,7 +2764,7 @@ components:
                     expiry_month:
                       type: string
                       description: Month of bank card expiration
-                      pattern: ^0?[1-9]{1}$)|(^1[012]{1}$
+                      pattern: '^0?[1-9]{1}$)|(^1[012]{1}$'
                       example: '08'
                     expiry_year:
                       type: string
@@ -4003,100 +4003,6 @@ components:
             settlement_rate: '1.0'
             sign: string
             addons: '{"description": "Refund for order #1", "callback_url": "https://example.com/status/callback/"}'
-      allOf:
-        - type: object
-          properties:
-            shop_id:
-              type: integer
-              minimum: 1
-              example: 904
-              description: Unique shop identifier in M5. You will receive it in the letter when registering in the system.
-            shop_request_id:
-              type: string
-              maxLength: 255
-              description: Token issue request identifier in your system. Should be unique for each new request
-              example: 1dd25c42-81e7-11ed-a1eb-0242ac120002
-            sign:
-              type: string
-              description: Request signature
-              example: 00fc989dc46c3a770998fd0f06d03328122963af29f9029b9d0d6bbcef20b1b7
-            error_code:
-              type: integer
-              example: 0
-              description: Payment scheme error code. If this value is more than `0`, it means that the payment scheme error occurred when confirming the token or confirmation failed. [Error codes description](#tag/errors-list)
-            payway:
-              type: string
-              maxLength: 150
-              pattern: ^[A-Za-z_,\[\]]+$
-              example: wallet_usd
-              description: Payment way for which token will be issued
-            token:
-              type: string
-              format: uuid
-              description: Payment token
-              example: 4f6cf35x-2c4y-483z-a0a9-158621f77a21
-            expires_at:
-              type: string
-              format: date-time
-              example: '2025-12-27T20:07:02'
-              description: Date and time of payment token expiration
-            status:
-              type: string
-              enum:
-                - SUCCESS
-                - FAILED
-              description: |-
-                Token issue statuses:
-                  * `SUCCESS` - token successfully created
-                  * `FAILED` - token creation failed
-              example: SUCCESS
-            account:
-              type: string
-              description: Masked card number or wallet number for which token is issued
-              example: 411111XXXXXX1111
-            card_info:
-              type: object
-              nullable: true
-              description: Information on the bank card
-              properties:
-                is_valid:
-                  type: boolean
-                  example: true
-                  description: Result of card verification, `true` means that the card is available for purchases
-                issuing_country:
-                  type: string
-                  maxLength: 3
-                  minLength: 3
-                  description: Issuer's country code. Alphabetical country identifier under [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3).
-                  example: GBR
-                issuing_bank:
-                  type: string
-                  example: Example Bank
-                  description: Issuing bank
-                payment_system:
-                  type: string
-                  example: VISA
-                  description: Payment scheme type
-                funding_source:
-                  type: string
-                  example: DEBIT
-                  description: Card type
-                payment_system_product:
-                  type: string
-                  example: GOLD
-                  description: Card category
-              required:
-                - is_valid
-          required:
-            - sign
-            - shop_id
-            - shop_request_id
-            - error_code
-            - payway
-            - token
-            - status
-            - account
-            - expires_at
 x-tagGroups:
   - name: Payments
     tags:
