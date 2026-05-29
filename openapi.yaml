@@ -1,17 +1,17 @@
 openapi: 3.0.2
 info:
   version: 1.0.0
-  title: M4 Payment Gateway API
-  termsOfService: https://m4solutions.io/terms
+  title: Avanor tech Payment Gateway API
+  termsOfService: https://avanor.tech/terms
   contact:
-    url: https://api.m4psp.com/gateway/v1/
-    name: M4 Support
+    url: https://api.avanor.tech/gateway/v1/
+    name: Avanor tech Support
   description: |-
-    ![M4 Logo](/assets/m4/images/m4-logo.png)
+    ![Avanor tech Logo](/assets/m5/images/m5-logo.png)
 
     ## Description
 
-    Using this API, you can interact with M4 payment platform: accept payments, make payments and perform other operations supported by the platform.
+    Using this API, you can interact with Avanor tech payment platform: accept payments, make payments and perform other operations supported by the platform.
 
     API runs over HTTP(S) protocol and uses JSON format to exchange data.
 
@@ -22,7 +22,7 @@ info:
 
     ## API changes
 
-    To ensure that our API improvements do not break your integration, please consider the following list of backward compatible changes that can occur without increasing your M4 API version number.
+    To ensure that our API improvements do not break your integration, please consider the following list of backward compatible changes that can occur without increasing your Avanor tech API version number.
 
     <div class="success">
     <p>We consider the following changes to our services to be backward-compatible:</p>
@@ -42,7 +42,7 @@ info:
 
     <SecurityDefinitions />
 servers:
-  - url: https://api.m4psp.com/gateway/v1/
+  - url: https://api.avanor.tech/gateway/v1
     description: The production API server
   - url: https://api.test.cplus-int.tech/gateway/v1/
     description: The test API server
@@ -73,7 +73,7 @@ tags:
 
       5. The response returns information with the invoice and data to be sent by the specified method to the specified URL for making or charging the payment. It is necessary to send the user to make a payment. In case `result: false`, you need to analyse the error code in the `error_code` field (see [description of error codes](#tag/errors-list)). If the `error code` is not fatal, then you need to wait for the [server notification](#tag/callbacks). If the `error code` is fatal, then communication with our API is over, it is necessary to inform the user that the payment was not created.
 
-      6. After the payment is made or charged by the user, the M4 system [sends a notification](#tag/callbacks) to the URL of interaction with the shop, containing payment information, for more information, see [here](#operation/post-invoice-create);
+      6. After the payment is made or charged by the user, the Avanor tech system [sends a notification](#tag/callbacks) to the URL of interaction with the shop, containing payment information, for more information, see [here](#operation/post-invoice-create);
 
       7. After receiving the charge, the payment is considered successfully completed.
 
@@ -93,13 +93,13 @@ tags:
 
       5. The response returns information with the invoice issued and data to be sent by the specified method to the specified URL for making or charging the payment. It is necessary to refer the user to make the payment. In case `result: false`, you need to analyse the error code in the `error_code` field (see [description of error codes](#tag/errors-list)). If the `error code` is not fatal, then you need to wait for the [server notification](#tag/callbacks). If the `error code` is fatal, then communication with our API is over, it is necessary to inform the user that the payment was not created.
 
-      6. After payment is completed by the user, the M4 system [sends a notification](#tag/callbacks) to the shop's interaction URL, with information about the blocking of funds;
+      6. After payment is completed by the user, the Avanor tech system [sends a notification](#tag/callbacks) to the shop's interaction URL, with information about the blocking of funds;
 
       7. After the funds are blocked on the client's account, you can charge the payment [invoice/charge](#operation/post-invoice-charge) or cancel the holding [invoice/unhold](#operation/post-invoice-unhold);
 
       8. The response returns information with the result of charge (sometimes the payment status may not be final, then you should wait for the notification);
 
-      9. M4 system [will send a notification](#tag/callbacks) to the URL of the interaction of the shop with the final status regarding the confirmation of funds withdrawal.
+      9. Avanor tech system [will send a notification](#tag/callbacks) to the URL of the interaction of the shop with the final status regarding the confirmation of funds withdrawal.
 
       ### Ensuring payments idempotency
 
@@ -114,7 +114,7 @@ tags:
       * In case of a full refund, you refund the successfully paid payment in full.
       * In case of a partial refund - a part of the payment amount, for example, if you want to refund a part of the purchase.
 
-      After confirmation of the refund by the payment system, the M4 system [will send a notification](#tag/callbacks) with details
+      After confirmation of the refund by the payment system, the Avanor tech system [will send a notification](#tag/callbacks) with details
       of refund to the URL transferred in the request when creating the refund. A detailed description of the notification format
       is described [here](#section/Refund-notification-example).
 
@@ -139,7 +139,7 @@ tags:
     description: |
       ### Issued invoice notice after payment or refund
 
-      After changing the payment status or returning to one of the final ones, the M4 system sends a notification to the shop to the URL specified in the shop settings or in the request body (if specified in the description of the request parameters).
+      After changing the payment status or returning to one of the final ones, the Avanor tech system sends a notification to the shop to the URL specified in the shop settings or in the request body (if specified in the description of the request parameters).
 
       <div class="warning">
       <p>To successfully receive server-side notifications, please make sure that your server receiving HTTP requests from us is configured according to the current security standards described on <a href="https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Protection_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Protection_Cheat_Sheet.html</a></p>
@@ -195,22 +195,22 @@ tags:
       # Resulting notification string (in format application/json)
       request_body_json = """
           {
-            "shop_id": 1,
-            "shop_order_id": "The store's order ID",
-            "description": "Your payment description",
-            "shop_amount": 100.0,
+            "shop_id": 100,
+            "shop_order_id": "Shop order id",
+            "description": "Some payment",
+            "shop_amount": 20.0,
             "shop_refund": 19.0,
             "shop_currency": 840,
-            "payment_id": 1234,
-            "client_price": 100.0,
+            "payment_id": 100,
+            "client_price": 20.0,
             "ps_currency": "840",
-            "payway": "payway_example",
-            "ps_data": "{\\"amount\\": \\"20.00\\", \\"bill_id\\": \\"i_100\\", \\"ccy\\": \\"USD\\", \\"command\\": \\"bill\\", \\"comment\\": \\"[i_100] Payment\\", \\"error\\": 0, \\"prv_name\\": \\"PaymentSystem\\", \\"ps_payer_account\\": \\"150010000097\\", \\"status\\": \\"paid\\", \\"user\\": \\"tel:+150010000097\\"}",
-            "created": "2026-08-27T15:38:07",
-            "updated": "2026-08-27T15:38:07",
+            "payway": "some_payway_name",
+            "ps_data": "{\\"amount\\": \\"20.00\\", \\"bill_id\\": \\"i_100\\", \\"ccy\\": \\"USD\\", \\"command\\": \\"bill\\", \\"comment\\": \\"[i_100] Payment\\", \\"error\\": 0, \\"prv_name\\": \\"PaymentSystem\\", \\"ps_payer_account\\": \\"971510000000\\", \\"status\\": \\"paid\\", \\"user\\": \\"tel:+971510000000\\"}",
+            "created": "2026-05-16T15:38:07",
+            "updated": "2026-05-16T15:38:07",
             "status": "success",
-            "addons": "{\\"callback_rejected_url\\": \\"https://some-shop.com/callback-rejected-url\\", \\"callback_url\\": \\"https://some-shop.com/callback-url\\", \\"description\\": \\"Some payment\\", \\"failed_url\\": \\"https://some-shop.com/fail\\", \\"phone\\": \\"150010000097\\", \\"success_url\\": \\"https://some-shop.com/success\\"}",
-            "sign": "26bcafa4b08dcfa901e47caa977c75ed286bb4390fb8271eb96e2f46470ffbf7"
+            "addons": "{\\"callback_rejected_url\\": \\"https://some-shop.com/callback-rejected-url\\", \\"callback_url\\": \\"https://some-shop.com/callback-url\\", \\"description\\": \\"Some payment\\", \\"failed_url\\": \\"https://some-shop.com/fail\\", \\"phone\\": \\"971510000000\\", \\"success_url\\": \\"https://some-shop.com/success\\"}",
+            "sign": "1d51960a52a6c7e8cf957d1a22ad2b3263603bace013facc335dd1429ecb4e97"
       }"""
 
       import json
@@ -219,23 +219,23 @@ tags:
       # Resulting notification string (in format application/x-www-form-urlencoded)
       if content_type == 'application/x-www-form-urlencoded':
           request_body_form_urlencoded = (
-              'shop_id=1&shop_order_id=The+store's+order+ID&description=Your+payment+description&s'
+              'shop_id=100&shop_order_id=Shop+order+id&description=Some+payment&s'
               'hop_amount=20.0&shop_refund=19.0&shop_currency=840&payment_id=100&'
-              'client_price=20.0&ps_currency=840&payway=payway_example&ps_data='
+              'client_price=20.0&ps_currency=840&payway=some_payway_name&ps_data='
               '%7B%22amount%22%3A+%2220.00%22%2C+%22bill_id%22%3A+%22i_100%22%2C+'
               '%22ccy%22%3A+%22USD%22%2C+%22command%22%3A+%22bill%22%2C+%22commen'
               't%22%3A+%22%5Bi_100%5D+Payment%22%2C+%22error%22%3A+0%2C+%22prv_na'
               'me%22%3A+%22PaymentSystem%22%2C+%22ps_payer_account%22%3A+%2297151'
               '0000000%22%2C+%22status%22%3A+%22paid%22%2C+%22user%22%3A+%22tel%3'
-              'A%2B150010000097%22%7D&created=2026-08-27T15%3A38%3A07&updated=202'
+              'A%2B971510000000%22%7D&created=2026-05-16T15%3A38%3A07&updated=202'
               '0-08-21T15%3A38%3A07&status=success&addons=%7B%22callback_rejected'
               '_url%22%3A+%22https%3A%2F%2Fsome-shop.com%2Fcallback-rejected-url%'
               '22%2C+%22callback_url%22%3A+%22https%3A%2F%2Fsome-shop.com%2Fcallb'
               'ack-url%22%2C+%22description%22%3A+%22Some+payment%22%2C+%22failed'
               '_url%22%3A+%22https%3A%2F%2Fsome-shop.com%2Ffail%22%2C+%22phone%22'
-              '%3A+%22150010000097%22%2C+%22success_url%22%3A+%22https%3A%2F%2Fso'
-              'me-shop.com%2Fsuccess%22%7D&sign=26bcafa4b08dcfa901e47caa977c75ed2'
-              '86bb4390fb8271eb96e2f46470ffbf7'
+              '%3A+%22971510000000%22%2C+%22success_url%22%3A+%22https%3A%2F%2Fso'
+              'me-shop.com%2Fsuccess%22%7D&sign=1d51960a52a6c7e8cf957d1a22ad2b326'
+              '3603bace013facc335dd1429ecb4e97'
           )
           from urllib.parse import parse_qsl
           parsed_request = dict(parse_qsl(request_body_form_urlencoded))
@@ -243,7 +243,7 @@ tags:
       print(parsed_request)
       # {
       #     'shop_id': 100,
-      #     'shop_order_id': 'The store's order ID',
+      #     'shop_order_id': 'Shop order id',
       #     'description': 'Some payment',
       #     'shop_amount': 20.0,
       #     'shop_refund': 19.0,
@@ -251,13 +251,13 @@ tags:
       #     'payment_id': '100',
       #     'client_price': 20.0,
       #     'ps_currency': 840,
-      #     'payway': 'payway_example',
-      #     'ps_data': '{"amount": "20.00", "bill_id": "i_100", "ccy": "USD", "command": "bill", "comment": "[i_100] Payment", "error": 0, "prv_name": "PaymentSystem", "ps_payer_account": "150010000097", "status": "paid", "user": "tel:+150010000097"}',
-      #     'created': '2026-08-27T15:38:07',
-      #     'updated': '2026-08-27T15:38:07',
+      #     'payway': 'value_payway_example',
+      #     'ps_data': '{"amount": "20.00", "bill_id": "i_100", "ccy": "USD", "command": "bill", "comment": "[i_100] Payment", "error": 0, "prv_name": "PaymentSystem", "ps_payer_account": "971510000000", "status": "paid", "user": "tel:+971510000000"}',
+      #     'created': '2026-05-16T15:38:07',
+      #     'updated': '2026-05-16T15:38:07',
       #     'status': 'success',
-      #     'addons': '{"callback_rejected_url": "https://example.com/callback-rejected-url", "callback_url": "https://example.com/callback-url", "description": "Your payment description", "failed_url": "https://example.com/fail", "phone": "150010000097", "success_url": "https://example.com/success"}',
-      #     'sign': '5d3ea83ec487fb1a769942b348741eafa5b124073d9bca968977731b724ee397',
+      #     'addons': '{"callback_rejected_url": "https://example.com/callback-rejected-url", "callback_url": "https://example.com/callback-url", "description": "Some payment", "failed_url": "https://example.com/fail", "phone": "971510000000", "success_url": "https://example.com/success"}',
+      #     'sign': '1d51960a52a6c7e8cf957d1a22ad2b3263603bace013facc335dd1429ecb4e97',
       # }
 
       # Let's get a list of sorted keys for signature generation
@@ -296,7 +296,7 @@ tags:
       sign = hashlib.sha256(string_to_sign.encode()).hexdigest()
       assert sign == parsed_request['sign']
       ```
-  - name: invoice-recurrent
+- name: invoice-recurrent
     x-displayName: Recurrent invoice
     description: |
       <div class="attention">This feature is available only after approval by the manager.</div>
@@ -322,7 +322,7 @@ tags:
       |  3    | Payment system has failed to create the payment                     | &minus;   |
       |  4    | Payment has been successful                                         | &plus;    |
       |  5    | Payment system has failed to receive a payment notice               | &minus;   |
-      |  6    | M4 payment system has rejected the operation               | &plus;    |
+      |  6    | Avanor tech payment system has rejected the operation               | &plus;    |
       |  8    | Funds for the invoice are withheld (held) by the payment system     | &minus;   |
   - name: withdraw-create
     x-displayName: Payout creation
@@ -355,7 +355,7 @@ tags:
 
       If you receive the `Read timeout` error at the payout creation request, then you need to make a status request by the shop's payout number [withdraw/shop_payment_status](#operation/post-withdraw-shop-payment-status) and if the response returns an error stating the absence of such a payout, you can repeat the request to create a payout. If the payout status is returned in the response, then it means that it was created and you need to focus on this status.
 
-      Reason for payout rejection ([getting status 6](#tag/withdraw-statuses)) can be clarified through the support service <a href="mailto:support@m4solutions.io">support@m4solutions.io</a>.
+      Reason for payout rejection ([getting status 6](#tag/withdraw-statuses)) can be clarified through the support service <a href="mailto:support@avanor.tech">support@avanor.tech</a>.
 
       ### Securing payouts idempotency
 
@@ -384,7 +384,7 @@ tags:
   - name: errors-list
     x-displayName: List of possible errors
     description: |
-      ### List of possible M4 API errors
+      ### List of possible Avanor tech API errors
 
       You can use this data to control the logic of your application, analyze and solve problems, output messages
       to the user, and for any other purpose. For example, if you received `error_code: 11` in the response, then most likely you
@@ -414,7 +414,7 @@ tags:
       | 10         | Invalid request parameters                                                                                                                                                          | &plus;  |
       | 11         | Shop has not been found                                                                                                                                                             | &plus;  |
       | 12         | Shop is not active                                                                                                                                                                  | &plus;  |
-      | 13         | Account has not been found in M4 system                                                                                                                                     | &plus;  |
+      | 13         | Account has not been found in Avanor tech system                                                                                                                                     | &plus;  |
       | 14         | Account status does not allow operations                                                                                                                                            | &plus;  |
       | 15         | Request from the current IP has been rejected                                                                                                                                       | &plus;  |
       | 16         | Currency exchange rate has not been found                                                                                                                                           | &plus;  |
@@ -492,7 +492,7 @@ paths:
             schema:
               $ref: '#/components/schemas/InvoicePayload.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       tags:
         - invoice-create
       description: |
@@ -540,7 +540,7 @@ paths:
                             $ref: '#/components/schemas/InvoiceCreateInfo.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -579,8 +579,8 @@ paths:
         For the data specified in the example response below, the following HTML form will be obtained:
 
         ```html
-        <form method="POST" action="https://example.checkout.com/form/">
-          <input name="transaction_id" value="1231" />
+        <form method="POST" action="https://checkout.domain.com/form/">
+          <input name="transaction_id" value="1047" />
           <input name="payment_type" value="card" />
           <input name="fail_url" value="https://example.com/payment/?status=fail" />
           <input name="success_url" value="https://example.com/payment/?status=success" />
@@ -597,7 +597,7 @@ paths:
         redirect_url = '{url}?{parameters}'.format(url=data['url'], parameters=urllib.parse.urlencode(data['data']))
         ```
 
-        An example of the formed URL: `https://example.checkout.com/form/?transaction_id=1231&payment_type=card&fail_url=https%3A%2F%2Fexample.com%2Fpayment%2F%3Fstatus%3Dfail&success_url=https%3A%2F%2Fexample.com%2Fpayment%2F%3Fstatus%3Dsuccess`
+        An example of the formed URL: `https://checkout.domain.com/form/?transaction_id=1231&payment_type=card&fail_url=https%3A%2F%2Fexample.com%2Fpayment%2F%3Fstatus%3Dfail&success_url=https%3A%2F%2Fexample.com%2Fpayment%2F%3Fstatus%3Dsuccess`
 
         <div class="attention">
         Please note that the parameters <code>failed_url</code>, <code>success_url</code>, <code>callback_url</code>, <code>callback_rejected_url</code> specified in the shop settings have priority over those specified in request. If you want to use unique url for each request, you need to inform the manager about it.
@@ -665,7 +665,7 @@ paths:
                             $ref: '#/components/schemas/InvoiceCheckData.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       tags:
         - invoice-create
       requestBody:
@@ -693,7 +693,7 @@ paths:
                             $ref: '#/components/schemas/InvoiceCreateInfo.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -716,7 +716,7 @@ paths:
 
         <div class="warning">
         When funds are held, merchants are required to confirm or cancel the payment within 5 days.
-        M4 service does not automatically confirm or cancel held payments after this period.
+        Avanor tech service does not automatically confirm or cancel held payments after this period.
 
         The funds holding period cannot exceed 5 days.
         </div>
@@ -750,7 +750,7 @@ paths:
                             $ref: '#/components/schemas/InvoiceChargeInfo.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -791,7 +791,7 @@ paths:
                             $ref: '#/components/schemas/InvoiceUnholdInfo.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -826,7 +826,7 @@ paths:
         * `shop_id`
         </div>
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -858,7 +858,7 @@ paths:
         * `shop_refund_id`
         </div>
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -898,7 +898,7 @@ paths:
         * `shop_id`
         </div>
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -973,7 +973,7 @@ paths:
       tags:
         - withdraw-create
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -1000,7 +1000,7 @@ paths:
                             $ref: '#/components/schemas/CheckAccountResponse.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       tags:
         - withdraw-create
       requestBody:
@@ -1070,13 +1070,13 @@ paths:
       tags:
         - withdraw-create
       security:
-        - Request signature: []
+        - RequestSignature: []
   /withdraw/status:
     post:
-      summary: Payout status request by ID of the payout created in M4 system
+      summary: Payout status request by ID of the payout created in Avanor tech system
       operationId: post-withdraw-status
       description: |
-        To get the status and up-to-date information of payments by the M4 system ID.
+        To get the status and up-to-date information of payments by the Avanor tech system ID.
 
         <div class="success">
         <p>Fields involved in request signature generation:</p>
@@ -1100,7 +1100,7 @@ paths:
                             $ref: '#/components/schemas/StatusResponse.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       tags:
         - withdraw-create
       requestBody:
@@ -1137,7 +1137,7 @@ paths:
                             $ref: '#/components/schemas/StatusResponse.v1'
                   - $ref: '#/components/schemas/ResponseFail.v1'
       security:
-        - Request signature: []
+        - RequestSignature: []
       tags:
         - withdraw-create
       requestBody:
@@ -1159,7 +1159,7 @@ paths:
         * `shop_id`
         </div>
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -1188,7 +1188,7 @@ paths:
         * `shop_id`
         </div>
       security:
-        - Request signature: []
+        - RequestSignature: []
       requestBody:
         content:
           application/json:
@@ -1212,9 +1212,9 @@ paths:
         - other-shop-methods
 components:
   securitySchemes:
-    Request signature:
+    RequestSignature:
       type: apiKey
-      in: requestBody
+      in: header
       name: sign
       description: |+
         Every API request must be signed so that we can identify your account.
@@ -1223,13 +1223,13 @@ components:
 
         ```json
         {
-            "shop_id": 1520,
-            "shop_order_id" : "5b0efa8a-153b-4421-abac-2aba4d772a86",
-            "amout": "6320.91",
+            "shop_id": 202203,
+            "shop_order_id" : "1994",
+            "amout": "104.04",
             "currency": 840,
-            "payway": "card_invoice_usd",
-            "description": "Payment for shop_id=1520",
-            "sign": "77a6f7a30876d480d4e771d08cb83800dd5cb874664c77e515ffc052b20293c6"
+            "payway": "payway_usd",
+            "description": "Invoice sign",
+            "sign": "05f6d3712417f62af6cbf66ca81c2f0b249f7dc1b4cbe3a50e3f8d67a1fb35a2"
         }
         ```
         <div class="warning">
@@ -1258,18 +1258,18 @@ components:
 
         3. The line for generating the SHA256 hash will be as follows:
 
-        `"6320.91:840:card_invoice_usd:1520:5b0efa8a-153b-4421-abac-2aba4d772a86account-secret-key"`
+        `"104.04:840:payway_usd:202203:1994account-secret-key"`
 
         Where `account-secret-key` is the secret identification key for your account. You can request a key from the support service.
 
         4. Let's get a hash expression of the generated line using Python code:
 
         ```python
-        >>> string_to_sign = '6320.91:840:card_invoice_usd:1520:5b0efa8a-153b-4421-abac-2aba4d772a86account-secret-key'
+        >>> string_to_sign = '104.04:840:payway_usd:202203:1994account-secret-key'
         >>> import hashlib
         >>> sign = hashlib.sha256(string_to_sign.encode()).hexdigest()
         >>> print(sign)
-        '77a6f7a30876d480d4e771d08cb83800dd5cb874664c77e515ffc052b20293c6'
+        '05f6d3712417f62af6cbf66ca81c2f0b249f7dc1b4cbe3a50e3f8d67a1fb35a2'
         ```
 
         <div class="success">
@@ -1277,11 +1277,49 @@ components:
         </div>
 
   schemas:
+    InvoiceCallBack:
+      oneOf:
+        - $ref: '#/components/schemas/InvoiceCallBack.v1'
+        - $ref: '#/components/schemas/InvoiceCallBackWithConversionData.v1'
+    RefundCallBack:
+      oneOf:
+        - $ref: '#/components/schemas/RefundCallBack.v1'
+        - $ref: '#/components/schemas/RefundCallBackWithConversionData.v1'
+    ShopID.v1:
+      type: object
+      title: Shop ID
+      properties:
+        shop_id:
+          type: integer
+          example: 202203
+          description: Unique shop identifier in the Avanor tech system.
+      required:
+        - shop_id
+    ShopOrderID.v1:
+      type: object
+      title: Identifier sent by the shop
+      properties:
+        shop_order_id:
+          type: string
+          example: 389d4f2c-46b9-4164-bcc4-fbd51e00d445
+          description: Order ID in your system. *Must be unique for each new invoice.*
+          maxLength: 255
+      required:
+        - shop_order_id
+    Amount.v1:
+      title: Amount received or withdrawn.
+      type: string
+      description: |
+        Amount received or withdrawn.
+        Example: `"105.45"`
+      exclusiveMinimum: true
+      minimum: 0
+      example: '105.45'
     InvoiceCreatePayload.v1:
       oneOf:
         - $ref: '#/components/schemas/InvoiceCreateCard.v1'
-        - $ref: '#/components/schemas/InvoiceCreateFPS.v1'
-    InvoiceCreateFPS.v1:
+        - $ref: '#/components/schemas/InvoiceCreatePaymentToken.v1'
+        InvoiceCreateFPS.v1:
       title: Faster payment system
       allOf:
         - $ref: '#/components/schemas/InvoiceCreateBase.v1'
@@ -1305,44 +1343,6 @@ components:
         success_url: "https://your-domain.com/status/success/"
         callback_url: "https://your-domain.com/status/callback/"
         callback_rejected_url: "https://your-domain.com/status/rejected/"
-    InvoiceCallBack:
-      oneOf:
-        - $ref: '#/components/schemas/InvoiceCallBack.v1'
-        - $ref: '#/components/schemas/InvoiceCallBackWithConversionData.v1'
-    RefundCallBack:
-      oneOf:
-        - $ref: '#/components/schemas/RefundCallBack.v1'
-        - $ref: '#/components/schemas/RefundCallBackWithConversionData.v1'
-    ShopID.v1:
-      type: object
-      title: Shop ID
-      properties:
-        shop_id:
-          type: integer
-          example: 1520
-          description: Unique shop identifier in the M4 system.
-      required:
-        - shop_id
-    ShopOrderID.v1:
-      type: object
-      title: Identifier sent by the shop
-      properties:
-        shop_order_id:
-          type: string
-          example: 5b0efa8a-153b-4421-abac-2aba4d772a86
-          description: Order ID in your system. *Must be unique for each new invoice.*
-          maxLength: 255
-      required:
-        - shop_order_id
-    Amount.v1:
-      title: Amount received or withdrawn.
-      type: string
-      description: |
-        Amount received or withdrawn.
-        Example: `"227.34"`
-      exclusiveMinimum: true
-      minimum: 0
-      example: '6320.91'
     Currency.v1:
       type: number
       description: |
@@ -1356,7 +1356,7 @@ components:
       pattern: ^[A-Za-z_,\[\]]+$
     PaywayInvoice.v1:
       title: Payment way
-      example: card_payway_usd
+      example: payway_usd
       allOf:
         - $ref: '#/components/schemas/Payway.v1'
         - description: |
@@ -1372,7 +1372,7 @@ components:
         description:
           type: string
           description: Optional payment description.
-          example: 'Payment for shop_id=1520'
+          example: 'Description of example invoice'
           maxLength: 255
     InvoicePayload.v1:
       title: Invoice issue parameters
@@ -1471,15 +1471,15 @@ components:
         payer_price:
           type: number
           description: Amount due, in the currency of the payway.
-          example: 227.56
+          example: 146.1
         paymethod_id:
           type: integer
           description: Payment method identifier
-          example: 4
+          example: 2
         paymethod_name:
           type: string
           description: Payment method name
-          example: wallet_method
+          example: method_example
         ps_currency:
           $ref: '#/components/schemas/Currency.v1'
         info:
@@ -1507,7 +1507,7 @@ components:
       title: Error response
       type: object
       description: |
-        # Error response 😎
+        # Error response
       allOf:
         - $ref: '#/components/schemas/Response.v1'
         - properties:
@@ -1518,7 +1518,7 @@ components:
             result:
               example: false
             message:
-              example: Shop (id = 1520) is not found
+              example: Shop (id = 202203) is not active
             error_code:
               example: 12
     InvoiceCreateUrls.v1:
@@ -1528,22 +1528,22 @@ components:
           type: string
           description: URL where the payer will be redirected after unsuccessful invoice payment.
           format: uri
-          example: https://your-domain.com/status/failed/
+          example: https://example.com/status/failed/
         success_url:
           type: string
           format: uri
-          example: https://your-domain.com/status/success/
+          example: https://example.com/status/success/
           description: URL where the payer will be redirected after successful invoice payment.
         callback_url:
           type: string
           description: URL where the notification about successful payment will be sent.
           format: uri
-          example: https://your-domain.com/status/callback/
+          example: https://example.com/status/callback/
         callback_rejected_url:
           type: string
           description: URL where the notification about unsuccessful payment will be sent.
           format: uri
-          example: https://your-domain.com/status/rejected/
+          example: https://example.com/status/rejected/
     InvoiceCreateBase.v1:
       allOf:
         - $ref: '#/components/schemas/InvoicePayload.v1'
@@ -1554,7 +1554,7 @@ components:
         client_ip:
           type: string
           format: IPv4
-          example: 192.168.1.1
+          example: 192.168.0.1
           description: Payer IP address
     InvoiceCreateExpiresAt.v1:
       type: object
@@ -1563,7 +1563,7 @@ components:
           title: <ISO 8601>
           type: string
           format: date-time
-          example: '2026-06-01T00:00:00Z'
+          example: '2026-12-30T00:00:00Z'
           description: |
             Invoice expiration date in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
             If invoice is not paid until this date, subsequent invoice payment will not be possible.
@@ -1580,7 +1580,7 @@ components:
               description: |-
                 Bank card details should be sent when:
                 - You have a PCI DSS certificate
-                - You do not need a page on the M4 side to get card details from the buyer
+                - You do not need a page on the Avanor tech side to get card details from the buyer
 
                 In case the payment way to the cards is used and the card data is not transmitted, the response to the request will contain a link to redirect the buyer to enter the card details.
                 Also, `method`, `url` and `data` will be filled in if the user needs to be redirected to pass the 3DSecure check.
@@ -1588,26 +1588,26 @@ components:
                 number:
                   type: string
                   description: Bank Card number
-                  example: '5395455214142417'
+                  example: '4814651800997171'
                 cardholder:
                   type: string
                   pattern: ' ^[0-9A-Z-/ _.'']{1,26}$'
                   description: Cardholder name. If name is not provided default value «Card Holder» will be used
-                  example: ADAM SMITH
+                  example: ELIZABETH JONES
                 expiry_month:
                   type: string
                   pattern: ' (^0?[1-9]{1}$)|(^1[012]{1}$)'
                   description: Bank card expiration month
-                  example: '08'
+                  example: '11'
                 expiry_year:
                   type: string
                   description: Bank card expiration year
                   pattern: ^\d{2}$
-                  example: '30'
+                  example: '34'
                 cvv:
                   type: string
                   description: Secure code
-                  example: '184'
+                  example: '518'
                   minLength: 3
                   maxLength: 4
               required:
@@ -1617,7 +1617,7 @@ components:
                 - cvv
             issue_payment_token:
               type: boolean
-              example: false
+              example: true
               description: This parameter is used to generate a payment token. More details [invoice/recurrent](#tag/invoice-recurrent)
             client_info:
               type: object
@@ -1723,8 +1723,8 @@ components:
               type: string
         id:
           type: number
-          example: 340198
-          description: Unique invoice identifier in M4 system
+          example: 32105
+          description: Unique invoice identifier in Avanor tech system
         method:
           type: string
           nullable: true
@@ -1737,7 +1737,7 @@ components:
           type: string
           format: uri
           nullable: true
-          example: https://example.checkout.com/form/
+          example: https://checkout.domain.com/form/
           description: URL subject to which the contents of the `data` field should be sent by the `method`. If `null` is received, then you do not need to send it.
         payment_token:
           type: object
@@ -1748,13 +1748,13 @@ components:
               type: string
               format: uuid
               description: Payment token
-              example: 980fba62-94d9-4489-bf4c-75b43eecf134
+              example: 4f6cf35x-2c4y-483z-a0a9-158621f77a21
             expires_at:
               title: <ISO 8601>
               nullable: true
               type: string
               format: date-time
-              example: '2026-10-21T16:48:22'
+              example: '2025-12-27T20:07:02'
               description: Date and time of payment token expiration
             status:
               type: string
@@ -1772,7 +1772,7 @@ components:
                   * `FAILED` - token creation failed
             account:
               type: string
-              example: 412103XXXXXX7701
+              example: 411111XXXXXX1111
               description: Masked number of the account (card or wallet) for which the token was issued
             card_info:
               type: object
@@ -1787,7 +1787,7 @@ components:
                   example: GBR
                 issuing_bank:
                   type: string
-                  example: Example Bank
+                  example: Mexico Bank
                   description: Issuing bank
                 payment_system:
                   type: string
@@ -1799,7 +1799,7 @@ components:
                   description: Card type
                 payment_system_product:
                   type: string
-                  example: GOLD
+                  example: Platinum
                   description: Card category
           required:
             - token
@@ -1816,7 +1816,7 @@ components:
         now:
           type: string
           format: date-time
-          example: '2026-05-24T16:35:42'
+          example: '2020-04-21T20:07:02'
           description: Request date and time.
       required:
         - now
@@ -1829,13 +1829,13 @@ components:
       type: string
       title: Payment description
       description: Payment description
-      example: Invoice for shop_id=1520
+      example: Invoice for user_id=7766
     ErrorCode.v1:
-      title: M4 API error code
+      title: Avanor tech API error code
       type: number
       format: integer
       example: 0
-      description: 'M4 API error code. `0` in cases there is no any error. Other codes can be found here: [Description of error codes](#tag/errors-list)'
+      description: 'Avanor tech API error code. `0` in cases there is no any error. Other codes can be found here: [Description of error codes](#tag/errors-list)'
       required:
         - error_code
     BaseInvoiceStatus.v1:
@@ -1848,7 +1848,7 @@ components:
             status: {}
             payment_id:
               type: integer
-              description: Unique identifier of the issued invoice in M4 system
+              description: Unique identifier of the issued invoice in Avanor tech system
               example: 12
             ps_data:
               type: string
@@ -1858,14 +1858,14 @@ components:
                 Other fields depend on the payment system.
 
                 In case of payment tokens, the `payment_token` parameter will also be represented in this field.
-              example: '{"ps_payer_account": "412103XXXXXX7701", "bill_id": "7766", "amount": "190.99", "status": "success"}'
+              example: '{"ps_payer_account": "411111XXXXXX1111", "bill_id": "7766", "amount": "190.99", "status": "success"}'
             ps_currency:
               allOf:
                 - description: Currency of the payway used by the user for payment
                 - $ref: '#/components/schemas/Currency.v1'
             payway:
               allOf:
-                - description: Payway in M4 system used by the user for payment
+                - description: Payway in Avanor tech system used by the user for payment
                 - $ref: '#/components/schemas/Payway.v1'
             description:
               $ref: '#/components/schemas/InvoiceDescription.v1'
@@ -1873,18 +1873,18 @@ components:
               type: string
               description: Invoice creation date and time
               format: date-time
-              example: '2026-05-24T16:35:42'
+              example: '2020-04-21T20:07:02'
             updated:
               type: string
               description: Invoice status change date and time (payment or rejection)
               format: date-time
-              example: '2026-04-21T20:09:02'
+              example: '2020-04-21T20:09:02'
             processed:
               type: string
               description: Date and time of invoice transfer to the final status
               format: date-time
               nullable: true
-              example: '2026-04-21T20:09:03'
+              example: '2020-04-21T20:09:03'
             shop_currency:
               allOf:
                 - description: Shop account currency
@@ -1893,12 +1893,12 @@ components:
               type: number
               format: float
               description: Invoice amount, in the invoice currency
-              example: 359.01
+              example: 267
             client_price:
               type: number
               format: float
               description: Amount paid by the client, in the payment system currency.
-              example: 365
+              example: 272.34
             error_code:
               $ref: '#/components/schemas/ErrorCode.v1'
       required:
@@ -1942,7 +1942,7 @@ components:
               type: number
               format: float
               description: Amount credited to the shop's balance, in currency `settlement_currency`
-              example: 104
+              example: 77
             settlement_currency:
               type: number
               description: Shop balance currency
@@ -1965,7 +1965,7 @@ components:
           type: string
           nullable: true
           format: date-time
-          example: '2026-01-01T03:00:00+03:00'
+          example: '2026-12-30T03:00:00+03:00'
           description: |
             Invoice expiration date in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
             If invoice is not paid until this date, subsequent invoice payment will not be possible.
@@ -2002,7 +2002,7 @@ components:
               type: string
               format: date-time
               nullable: true
-              example: '2026-05-24T16:35:42'
+              example: '2020-04-21T20:07:02'
               description: Date and time of issuing the final invoice status
             payment_token:
               type: object
@@ -2012,18 +2012,18 @@ components:
                   type: string
                   format: uuid
                   description: Payment token
-                  example: 980fba62-94d9-4489-bf4c-75b43eecf134
+                  example: 4f6cf35x-2c4y-483z-a0a9-158621f77a21
                 expires_at:
                   title: <ISO 8601>
                   type: string
                   format: date-time
-                  example: '2026-04-21T20:07:02'
+                  example: '2025-12-27T20:07:02'
                   description: Date and time of payment token expiration
                 status:
                   $ref: '#/components/schemas/PaymentTokenStatus.v1'
                 account:
                   type: string
-                  example: 412103XXXXXX7701
+                  example: 411111XXXXXX1111
                   description: Masked number of the account (card or wallet) for which the token was issued
                 card_info:
                   type: object
@@ -2041,7 +2041,7 @@ components:
                       description: Issuing bank
                     payment_system:
                       type: string
-                      example: MASTERCARD
+                      example: VISA
                       description: Payment system type
                     funding_source:
                       type: string
@@ -2049,7 +2049,7 @@ components:
                       description: Card type
                     payment_system_product:
                       type: string
-                      example: PLATINUM
+                      example: GOLD
                       description: Card category
               required:
                 - token
@@ -2064,9 +2064,9 @@ components:
       properties:
         invoice_id:
           type: number
-          description: Invoice ID in the M4 system.
+          description: Invoice ID in the Avanor tech system.
           format: integer
-          example: 108744
+          example: 27401
       required:
         - invoice_id
     InvoiceChargePayload.v1:
@@ -2087,7 +2087,7 @@ components:
               type: number
               format: float
               description: Amount credited to the shop's balance, in currency `settlement_currency`
-              example: 104
+              example: 201
             settlement_currency:
               type: number
               description: Shop balance currency
@@ -2130,11 +2130,11 @@ components:
         id:
           type: integer
           description: Payment method ID.
-          example: 15
+          example: 14
         name:
           type: string
           description: Payment method name.
-          example: card_payment_usd
+          example: card-usd
         rating:
           type: integer
           description: Payment method rating.
@@ -2146,7 +2146,7 @@ components:
       required:
         - id
         - name
-        - raiting
+        - rating
         - payways
     FeeConfig.v1:
       title: Settings for the distribution of commission between the shop and the payer.
@@ -2156,14 +2156,14 @@ components:
           type: number
           description: A commission percentage, which is set under the agreement for the shop.
           format: float
-          example: 3.8
+          example: 2.7
           minimum: 0
           maximum: 100
         fix:
           type: number
           description: A fixed commission rate, which is set under the agreement for the shop.
           format: float
-          example: 1.4
+          example: 1.6
           minimum: 0
       required:
         - percent
@@ -2174,7 +2174,7 @@ components:
       properties:
         alias:
           type: string
-          example: payway_card_usd_example
+          example: example_payway_card_usd
           description: Payway alias.
         currency:
           $ref: '#/components/schemas/Currency.v1'
@@ -2206,7 +2206,7 @@ components:
             Distribution of percentage commission between the payer and the shop.
              0 - for the payer, 1 - for the shop.
           format: float
-          example: 0.05
+          example: 0.09
           minimum: 0
           maximum: 1
         fix_part:
@@ -2237,14 +2237,14 @@ components:
                 phone:
                   comment:
                     en: Enter your phone number in international format without «+»
-                  example: '150010000097'
+                  example: '971510000000'
                   label:
                     en: 'Phone number:'
                   prefix: +
                   regex: ^(91|994|82|372|375|374|44|998|972|66|90|81|1|507|7|77|380|371|370|996|9955|992|373|84)[0-9]{6,14}$
             id:
               type: integer
-              example: 99
+              example: 78
               description: Payway ID
             fee_part_config:
               $ref: '#/components/schemas/FeePartConfig.v1'
@@ -2282,7 +2282,7 @@ components:
       properties:
         shop_refund_id:
           type: string
-          example: dc4ad503-d97a-4fec-adeb-ba51d43a7191
+          example: aeee94a6-4e52-4a6f-ae63-f2159eb35add
           description: The refund ID in your system. *Must be unique for each new refund.*
           maxLength: 255
       required:
@@ -2292,7 +2292,7 @@ components:
       type: string
       description: |
         Refund amount, calculated in `currency`.
-      example: '95.50'
+      example: '91.00'
       exclusiveMinimum: true
       minimum: 0
     InvoiceRefundPayload.v1:
@@ -2310,11 +2310,11 @@ components:
               type: string
               description: The URL to which the callback will be sent after the refund transitions to the final status.
               format: uri
-              example: https://your-domain.com/status/callback/
+              example: https://example.com/status/callback/
             description:
               type: string
               description: Optional description of the refund.
-              example: 'Refund payment for shop_id=1520'
+              example: 'Refund for order #1'
               maxLength: 255
           required:
             - shop_id
@@ -2365,18 +2365,18 @@ components:
               type: string
               description: Date and time when the refund was created
               format: date-time
-              example: '2026-05-24T16:35:42'
+              example: '2020-04-21T20:07:02'
             processed_at:
               nullable: true
               type: string
               description: Date and time of actual processing of the refund in the payment system
               format: date-time
-              example: '2026-04-21T20:08:02'
+              example: '2020-04-21T20:08:02'
             settlement_amount:
               type: string
               minimum: 0
               description: Amount of write-off from the shop balance, in currency `settlement_currency`
-              example: '95.50'
+              example: '91.00'
             settlement_currency:
               type: string
               description: Shop balance currency. Alphabetic currency identifier in accordance with [ISO 4217](https://wikipedia.org/wiki/ISO_4217).
@@ -2447,7 +2447,7 @@ components:
       example: 840
     PaywayWithdraw.v1:
       title: Payment way
-      example: card_payway_usd
+      example: example_payway_usd
       allOf:
         - $ref: '#/components/schemas/Payway.v1'
         - description: |
@@ -2483,7 +2483,7 @@ components:
       description: |-
         Account of the recipient of funds in the payment system or service.
         For example, phone, card number or steam login.
-      example: '150010000097'
+      example: '104008771'
     AmountType.v1:
       title: Amount type
       type: string
@@ -2521,7 +2521,7 @@ components:
       example:
         account:
           regex: \d{9,15}$
-          title: 'Account number, for example: 150010000097'
+          title: 'Account number, for example: 971510000000'
     TryResponse.v1:
       title: Result of a preliminary calculation of the payout
       type: object
@@ -2531,7 +2531,7 @@ components:
         payee_receive:
           type: number
           description: Amount to be received on the account in `ps_currency` currency.
-          example: 150
+          example: 100
         ps_currency:
           allOf:
             - description: Payway currency for withdrawal
@@ -2541,12 +2541,12 @@ components:
         shop_write_off:
           type: number
           description: Amount to be debited from the shop in `shop_currency` currency.
-          example: '160'
+          example: '104'
     AccountDetails.v1:
       title: Detailed account information
       type: object
       example:
-        name: Adam
+        name: Ivan
       description: Detailed account information. If additional parameters were transferred in the `/withdraw/try` response in the `account_info_config` field, they must be transferred in the `account_details` field.
     CheckAccountPayload.v1:
       title: Account verification parameters
@@ -2575,8 +2575,8 @@ components:
           nullable: true
           description: Additional information returned from the service provider. It can be displayed to the payer, as it often contains their personal information, for example, the full name of the account holder.
           example:
-            first_name: Adam
-            last_name: Smith
+            first_name: Ivan
+            last_name: Ivanov
         result:
           type: boolean
           example: true
@@ -2618,7 +2618,7 @@ components:
               $ref: '#/components/schemas/AccountDetails.v1'
             description:
               type: string
-              example: Payout to my worker
+              example: It's payout for my friend
               description: Description of the payout. Transferred in the payway provided that the payment system has this function.
               maxLength: 255
           required:
@@ -2669,7 +2669,7 @@ components:
           $ref: '#/components/schemas/Status.v1'
         redirect_info:
           type: object
-          description: Optional redirect parameters for the payment scheme. Often `null` when no client redirect is required.
+          description: Actual only for cases with Pyypl wallet. In all other cases, null is returned.
           nullable: true
           properties:
             data:
@@ -2679,10 +2679,10 @@ components:
               properties:
                 key1:
                   type: string
-                  example: example_1
+                  example: value1
                 key2:
                   type: string
-                  example: example_2
+                  example: value2
             method:
               type: string
               enum:
@@ -2694,7 +2694,7 @@ components:
               type: string
               description: URL to which it is necessary to send the content of `data` field using `method`
               format: uri
-              example: https://example.checkout.com/form/
+              example: https://checkout.domain.com/form/
           required:
             - data
             - method
@@ -2717,8 +2717,8 @@ components:
           properties:
             withdraw_id:
               type: integer
-              example: 121
-              description: Payout (withdraw) ID in M4 system.
+              example: 131
+              description: Payout (withdraw) ID in Avanor tech system.
           required:
             - withdraw_id
       description: ''
@@ -2728,7 +2728,7 @@ components:
       properties:
         shop_payment_id:
           type: string
-          example: 5b0efa8a-153b-4421-abac-2aba4d772a86
+          example: 389d4f2c-46b9-4164-bcc4-fbd51e00d445
           description: Unique payment identifier of the shop.
       required:
         - shop_payment_id
@@ -2739,7 +2739,7 @@ components:
           properties:
             id:
               type: integer
-              description: Payout ID in M4 system
+              description: Payout ID in Avanor tech system
             status:
               $ref: '#/components/schemas/Status.v1'
             ps_currency:
@@ -2760,15 +2760,15 @@ components:
               exclusiveMinimum: true
             shop_payment_id:
               type: string
-              example: 72b0cc0c-8826-44ec-8bd7-5bea72012811
+              example: 5977583d-188f-4f9f-a9fa-386bd51dd363
               description: Unique payment identifier of the shop.
             rrn:
               type: string
-              example: c16d5ef3-540e-42c3-b172-bb4f15a92f31
+              example: b66019b5-adaf-448e-aa4d-086d0876ba02
               description: Payout ID in the payment system.
             bank_transaction_id:
               type: string
-              example: 5aa56edd-b8c0-417b-ad9d-2cd42693e7c0
+              example: 94d8d8ce-08e0-4bed-89ce-4af29546ab80
               description: Payout ID in the beneficiary's bank system.
             error_code:
               $ref: '#/components/schemas/ErrorCode.v1'
@@ -2832,19 +2832,19 @@ components:
           description: The balance available for payments using the `withdraw/create` method
           type: number
           format: float
-          example: 100.3
+          example: 200.01
           minimum: 0
         hold:
           description: Temporarily withheld funds, for example, when checking an incoming receipt.
           type: number
           format: float
-          example: 0
+          example: 10
           minimum: 0
         frozen:
           description: Frozen funds on the balance, for example, for a created payment that is being processed
           type: number
           format: float
-          example: 574190.63
+          example: 50514.79
           minimum: 0
     ShopBalancesResponseData.v1:
       title: Shop balances in different currencies available during payments
@@ -2901,24 +2901,24 @@ components:
         - addons
         - shop_refund
       example:
-        shop_order_id: 5b0efa8a-153b-4421-abac-2aba4d772a86
-        shop_id: 1
+        shop_order_id: 5696fa59-c545-4af8-ba0d-886ac0f25063
+        shop_id: 904
         status: success
-        payment_id: 91
-        ps_data: '{"ps_payer_account": "455610XXXXXX2032"}'
+        payment_id: 171718
+        ps_data: '{"ps_payer_account": "440010XXXXXX7701"}'
         ps_currency: 840
-        payway: card_payway_usd
-        description: Invoice for shop_id=1520
-        created: '2026-11-01T17:19:36'
-        updated: '2026-11-01T17:19:37'
-        processed: '2026-11-01T17:19:37'
+        payway: example_payway_usd
+        description: Invoice for order=1234
+        created: '2026-06-18T17:19:36'
+        updated: '2026-06-18T17:19:37'
+        processed: '2026-06-18T17:19:37'
         shop_currency: 840
-        shop_amount: 200
-        shop_refund: 104
-        client_price: 200
+        shop_amount: 305
+        shop_refund: 77
+        client_price: 305
         error_code: 0
         sign: string
-        addons: '{"comment": "test"}'
+        addons: '{"comment": "example"}'
     InvoiceCallBackWithConversionData.v1:
       title: Invoice callback with conversion data
       allOf:
@@ -2942,26 +2942,26 @@ components:
             - settlement_currency
             - settlement_rate
           example:
-            shop_order_id: 5b0efa8a-153b-4421-abac-2aba4d772a86
-            shop_id: 1
+            shop_order_id: cba64e93-cea5-4932-83d9-04076291fdf3
+            shop_id: 701
             status: success
-            payment_id: 91
-            ps_data: '{"ps_payer_account": "455610XXXXXX2032"}'
+            payment_id: 991
+            ps_data: '{"ps_payer_account": "440010XXXXXX7701"}'
             ps_currency: 840
-            payway: card_payway_usd
-            description: Invoice for shop_id=1520
-            created: '2026-11-01T17:19:36'
-            updated: '2026-11-01T17:19:37'
-            processed: '2026-11-01T17:19:37'
+            payway: example_payway_usd
+            description: Invoice for order=1234
+            created: '2026-06-18T17:19:36'
+            updated: '2026-06-18T17:19:37'
+            processed: '2026-06-18T17:19:37'
             shop_currency: 840
-            shop_amount: 200
-            shop_refund: 104
-            client_price: 200
+            shop_amount: 305
+            shop_refund: 77
+            client_price: 305
             settlement_currency: 978
             settlement_rate: 1
             error_code: 0
             sign: string
-            addons: '{"comment": "test"}'
+            addons: '{"comment": "example"}'
     BaseRefundCallBack.v1:
       title: Base refund callback
       allOf:
@@ -3005,16 +3005,16 @@ components:
         - sign
         - addons
       example:
-        shop_refund_id: dc4ad503-d97a-4fec-adeb-ba51d43a7191
+        shop_refund_id: 0e976a64-26e4-48b3-9c30-4377a32a714f
         status: SUCCESS
-        invoice_id: 108744
-        amount: '95.50'
+        invoice_id: 7708
+        amount: '114.00'
         currency: USD
         error_code: 0
-        created_at: '2026-11-01T17:21:15'
-        processed_at: '2026-11-01T17:21:16'
+        created_at: '2026-06-18T17:21:15'
+        processed_at: '2026-06-18T17:21:16'
         sign: string
-        addons: '{"description": "Refund payment for shop_id=1520", "callback_url": "https://your-domain.com/status/callback/"}'
+        addons: '{"description": "Refund for order=1233", "callback_url": "https://example.com/status/callback/"}'
     RefundCallBackWithConversionData.v1:
       title: Refund callback with conversion data
       allOf:
@@ -3052,19 +3052,19 @@ components:
             - sign
             - addons
           example:
-            shop_refund_id: dc4ad503-d97a-4fec-adeb-ba51d43a7191
+            shop_refund_id: f87155ba-afc6-4951-95fd-b2c6369d2cef
             status: SUCCESS
-            invoice_id: 108744
-            amount: '95.50'
+            invoice_id: 7708
+            amount: '114.00'
             currency: USD
             error_code: 0
-            created_at: '2026-11-01T17:21:15'
-            processed_at: '2026-11-01T17:21:16'
-            settlement_amount: '95.50'
+            created_at: '2026-06-18T17:21:15'
+            processed_at: '2026-06-18T17:21:16'
+            settlement_amount: '91.00'
             settlement_currency: USD
             settlement_rate: '1.0'
             sign: string
-            addons: '{"description": "Refund payment for shop_id=1520", "callback_url": "https://your-domain.com/status/callback/"}'
+            addons: '{"description": "Refund for order=1232", "callback_url": "https://example.com/status/callback/"}'
 x-tagGroups:
   - name: Payments
     tags:
