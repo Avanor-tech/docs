@@ -1,10 +1,10 @@
 ---
-title: "M5 Payment Gateway API (1.0.0)"
+title: "Avanor tech Payment Gateway API (1.0.0)"
 ---
 
 ## Description
 
-Using this API, you can interact with M5 payment platform: accept payments, make payments and perform other operations supported by the platform.
+Using this API, you can interact with Avanor tech payment platform: accept payments, make payments and perform other operations supported by the platform.
 
 API runs over HTTP(S) protocol and uses JSON format to exchange data.
 
@@ -14,7 +14,7 @@ We use the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard as the da
 
 ## API changes
 
-To ensure that our API improvements do not break your integration, please consider the following list of backward compatible changes that can occur without increasing your M5 API version number.
+To ensure that our API improvements do not break your integration, please consider the following list of backward compatible changes that can occur without increasing your Avanor tech API version number.
 
 > **Success:** We consider the following changes to our services to be backward-compatible:
 
@@ -38,13 +38,13 @@ The signature is transferred in the request body through the `sign` parameter, f
 
 ```json
 {
-"shop_id": 1520,
-"shop_order_id": "5b0efa8a-153b-4421-abac-2aba4d772a86",
-"amount": "6320.91",
+"shop_id": 202203,
+"shop_order_id" : "1994",
+"amout": "104.04",
 "currency": 840,
-"payway": "card_invoice_usd",
-"description": "My test invoice #1",
-"sign": "77a6f7a30876d480d4e771d08cb83800dd5cb874664c77e515ffc052b20293c6"
+"payway": "payway_usd",
+"description": "Invoice sign",
+"sign": "05f6d3712417f62af6cbf66ca81c2f0b249f7dc1b4cbe3a50e3f8d67a1fb35a2"
 }
 ```
 
@@ -63,13 +63,13 @@ Signature line is generated according to the following algorithm: all request pa
 - payway
 
 2. Let's sort keys in alphabetical sequence: `"amount", "currency", "payway", "shop_id", "shop_order_id"`
-3. The line for generating the SHA256 hash will be as follows: `6320.91:840:card_invoice_usd:1520:5b0efa8a-153b-4421-abac-2aba4d772a86account-secret-key"` Where account-secret-key is the secret identification key for your account. You can request a key from the support service.
+3. The line for generating the SHA256 hash will be as follows: `104.04:840:payway_usd:202203:1994account-secret-key"` Where account-secret-key is the secret identification key for your account. You can request a key from the support service.
 4. Let's get a hash expression of the generated line using Python code:
 
-`string\_to\_sign = '6320.91:840:card\_invoice\_usd:1520:5b0efa8a-153b-4421-abac-2aba4d772a86account-secret-key'`
+`string\_to\_sign = '104.04:840:payway_usd:202203:1994account-secret-key'`
 
 `import hashlib`
 
 `sign = hashlib.sha256(string\_to\_sign.encode()).hexdigest()`
 
-`print(sign) '77a6f7a30876d480d4e771d08cb83800dd5cb874664c77e515ffc052b20293c6'`
+`print(sign) '05f6d3712417f62af6cbf66ca81c2f0b249f7dc1b4cbe3a50e3f8d67a1fb35a2'`
