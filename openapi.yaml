@@ -44,7 +44,7 @@ info:
 servers:
   - url: https://api.avanor.tech/gateway/v1
     description: The production API server
-  - url: https://api.test.cplus-int.tech/gateway/v1/
+  - url: https://api.test.cplus-int.tech/gateway/v1
     description: The test API server
 tags:
   - name: invoice-create
@@ -187,116 +187,10 @@ tags:
 
       <SchemaDefinition schemaRef="#/components/schemas/RefundCallBack" />
 
-      ## Example of Python code to verify the signature of a request
+      ## Callback signature verification
 
-      The algorithm implemented below on the example of a server payment notification is the same for a server refund notification.
-
-      ```python
-      # Resulting notification string (in format application/json)
-      request_body_json = """
-          {
-            "shop_id": 100,
-            "shop_order_id": "Shop order id",
-            "description": "Some payment",
-            "shop_amount": 20.0,
-            "shop_refund": 19.0,
-            "shop_currency": 840,
-            "payment_id": 100,
-            "client_price": 20.0,
-            "ps_currency": "840",
-            "payway": "some_payway_name",
-            "ps_data": "{\\"amount\\": \\"20.00\\", \\"bill_id\\": \\"i_100\\", \\"ccy\\": \\"USD\\", \\"command\\": \\"bill\\", \\"comment\\": \\"[i_100] Payment\\", \\"error\\": 0, \\"prv_name\\": \\"PaymentSystem\\", \\"ps_payer_account\\": \\"971510000000\\", \\"status\\": \\"paid\\", \\"user\\": \\"tel:+971510000000\\"}",
-            "created": "2026-05-16T15:38:07",
-            "updated": "2026-05-16T15:38:07",
-            "status": "success",
-            "addons": "{\\"callback_rejected_url\\": \\"https://some-shop.com/callback-rejected-url\\", \\"callback_url\\": \\"https://some-shop.com/callback-url\\", \\"description\\": \\"Some payment\\", \\"failed_url\\": \\"https://some-shop.com/fail\\", \\"phone\\": \\"971510000000\\", \\"success_url\\": \\"https://some-shop.com/success\\"}",
-            "sign": "1d51960a52a6c7e8cf957d1a22ad2b3263603bace013facc335dd1429ecb4e97"
-      }"""
-
-      import json
-      parsed_request = json.loads(request_body_json)
-
-      # Resulting notification string (in format application/x-www-form-urlencoded)
-      if content_type == 'application/x-www-form-urlencoded':
-          request_body_form_urlencoded = (
-              'shop_id=100&shop_order_id=Shop+order+id&description=Some+payment&s'
-              'hop_amount=20.0&shop_refund=19.0&shop_currency=840&payment_id=100&'
-              'client_price=20.0&ps_currency=840&payway=some_payway_name&ps_data='
-              '%7B%22amount%22%3A+%2220.00%22%2C+%22bill_id%22%3A+%22i_100%22%2C+'
-              '%22ccy%22%3A+%22USD%22%2C+%22command%22%3A+%22bill%22%2C+%22commen'
-              't%22%3A+%22%5Bi_100%5D+Payment%22%2C+%22error%22%3A+0%2C+%22prv_na'
-              'me%22%3A+%22PaymentSystem%22%2C+%22ps_payer_account%22%3A+%2297151'
-              '0000000%22%2C+%22status%22%3A+%22paid%22%2C+%22user%22%3A+%22tel%3'
-              'A%2B971510000000%22%7D&created=2026-05-16T15%3A38%3A07&updated=202'
-              '0-08-21T15%3A38%3A07&status=success&addons=%7B%22callback_rejected'
-              '_url%22%3A+%22https%3A%2F%2Fsome-shop.com%2Fcallback-rejected-url%'
-              '22%2C+%22callback_url%22%3A+%22https%3A%2F%2Fsome-shop.com%2Fcallb'
-              'ack-url%22%2C+%22description%22%3A+%22Some+payment%22%2C+%22failed'
-              '_url%22%3A+%22https%3A%2F%2Fsome-shop.com%2Ffail%22%2C+%22phone%22'
-              '%3A+%22971510000000%22%2C+%22success_url%22%3A+%22https%3A%2F%2Fso'
-              'me-shop.com%2Fsuccess%22%7D&sign=1d51960a52a6c7e8cf957d1a22ad2b326'
-              '3603bace013facc335dd1429ecb4e97'
-          )
-          from urllib.parse import parse_qsl
-          parsed_request = dict(parse_qsl(request_body_form_urlencoded))
-
-      print(parsed_request)
-      # {
-      #     'shop_id': 100,
-      #     'shop_order_id': 'Shop order id',
-      #     'description': 'Some payment',
-      #     'shop_amount': 20.0,
-      #     'shop_refund': 19.0,
-      #     'shop_currency': 840,
-      #     'payment_id': '100',
-      #     'client_price': 20.0,
-      #     'ps_currency': 840,
-      #     'payway': 'value_payway_example',
-      #     'ps_data': '{"amount": "20.00", "bill_id": "i_100", "ccy": "USD", "command": "bill", "comment": "[i_100] Payment", "error": 0, "prv_name": "PaymentSystem", "ps_payer_account": "971510000000", "status": "paid", "user": "tel:+971510000000"}',
-      #     'created': '2026-05-16T15:38:07',
-      #     'updated': '2026-05-16T15:38:07',
-      #     'status': 'success',
-      #     'addons': '{"callback_rejected_url": "https://example.com/callback-rejected-url", "callback_url": "https://example.com/callback-url", "description": "Some payment", "failed_url": "https://example.com/fail", "phone": "971510000000", "success_url": "https://example.com/success"}',
-      #     'sign': '1d51960a52a6c7e8cf957d1a22ad2b3263603bace013facc335dd1429ecb4e97',
-      # }
-
-      # Let's get a list of sorted keys for signature generation
-      keys = sorted(parsed_request)
-
-      # Let's remove the signed key from them.
-      keys.remove('sign')
-
-      print(keys)
-      # This is how the resulting list will look like
-      #     ['addons',
-      #      'client_price',
-      #      'created',
-      #      'description',
-      #      'payment_id',
-      #      'payway',
-      #      'ps_currency',
-      #      'ps_data',
-      #      'shop_amount',
-      #      'shop_currency',
-      #      'shop_id',
-      #      'shop_order_id',
-      #      'shop_refund',
-      #      'status',
-      #      'updated']
-
-      # Let's compose a line using the sorted key values obtained in the previous step
-      values_to_sign = []
-      for k in keys:
-          if parsed_request[k] != '' and parsed_request[k] is not None:
-              values_to_sign.append(str(parsed_request[k]))
-
-      # Let's form the final signature and check its value with the value received in the response
-      string_to_sign = ':'.join(values_to_sign) + '<secret_key_here>'
-      import hashlib
-      sign = hashlib.sha256(string_to_sign.encode()).hexdigest()
-      assert sign == parsed_request['sign']
-      ```
-- name: invoice-recurrent
+      Use the same signature algorithm as for API requests (see **Request signature** above). Include all non-null, non-empty notification parameters except `sign`; sort keys alphabetically, join values with `:`, append the shop secret key, and compare the SHA-256 hex digest with the `sign` field.
+  - name: invoice-recurrent
     x-displayName: Recurrent invoice
     description: |
       <div class="attention">This feature is available only after approval by the manager.</div>
@@ -1319,7 +1213,8 @@ components:
       oneOf:
         - $ref: '#/components/schemas/InvoiceCreateCard.v1'
         - $ref: '#/components/schemas/InvoiceCreatePaymentToken.v1'
-        InvoiceCreateFPS.v1:
+        - $ref: '#/components/schemas/InvoiceCreateFPS.v1'
+    InvoiceCreateFPS.v1:
       title: Faster payment system
       allOf:
         - $ref: '#/components/schemas/InvoiceCreateBase.v1'
@@ -1701,6 +1596,19 @@ components:
                   example: '05'
           required:
             - client_ip
+    InvoiceCreatePaymentToken.v1:
+      title: Invoice issue by payment token
+      allOf:
+        - $ref: '#/components/schemas/InvoiceCreateBase.v1'
+        - type: object
+          properties:
+            payment_token:
+              type: string
+              format: uuid
+              description: Payment token from a previous successful payment with `issue_payment_token`
+              example: 4f6cf35x-2c4y-483z-a0a9-158621f77a21
+          required:
+            - payment_token
     InvoiceCreateInfo.v1:
       title: Invoice payment form
       type: object
@@ -2057,7 +1965,10 @@ components:
           required:
             - is_unique
     InvoiceHoldPayload.v1:
-      $ref: '#/components/schemas/InvoiceCreateCard.v1'
+      oneOf:
+        - $ref: '#/components/schemas/InvoiceCreateCard.v1'
+        - $ref: '#/components/schemas/InvoiceCreatePaymentToken.v1'
+        - $ref: '#/components/schemas/InvoiceCreateFPS.v1'
     InvoiceID.v1:
       title: Payment ID
       type: object
