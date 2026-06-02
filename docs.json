@@ -5,6 +5,7 @@
   "colors": {
     "primary": "#0D9373"
   },
+  "favicon": "images/favicon.png",
   "interaction": {
     "drilldown": false
   },
