@@ -1,17 +1,17 @@
 openapi: 3.0.2
 info:
   version: 1.0.0
-  title: Avanor tech Payment Gateway API
+  title: Avanor Payment Gateway API
   termsOfService: https://avanor.tech/terms
   contact:
     url: https://api.avanor.tech/gateway/v1/
-    name: Avanor tech Support
+    name: Avanor Support
   description: |-
-    ![Avanor tech Logo](/assets/m5/images/m5-logo.png)
+    ![Avanor Logo](/assets/m5/images/m5-logo.png)
 
     ## Description
 
-    Using this API, you can interact with Avanor tech payment platform: accept payments, make payments and perform other operations supported by the platform.
+    Using this API, you can interact with Avanor payment platform: accept payments, make payments and perform other operations supported by the platform.
 
     API runs over HTTP(S) protocol and uses JSON format to exchange data.
 
@@ -22,7 +22,7 @@ info:
 
     ## API changes
 
-    To ensure that our API improvements do not break your integration, please consider the following list of backward compatible changes that can occur without increasing your Avanor tech API version number.
+    To ensure that our API improvements do not break your integration, please consider the following list of backward compatible changes that can occur without increasing your Avanor API version number.
 
     <div class="success">
     <p>We consider the following changes to our services to be backward-compatible:</p>
@@ -73,7 +73,7 @@ tags:
 
       5. The response returns information with the invoice and data to be sent by the specified method to the specified URL for making or charging the payment. It is necessary to send the user to make a payment. In case `result: false`, you need to analyse the error code in the `error_code` field (see [description of error codes](#tag/errors-list)). If the `error code` is not fatal, then you need to wait for the [server notification](#tag/callbacks). If the `error code` is fatal, then communication with our API is over, it is necessary to inform the user that the payment was not created.
 
-      6. After the payment is made or charged by the user, the Avanor tech system [sends a notification](#tag/callbacks) to the URL of interaction with the shop, containing payment information, for more information, see [here](#operation/post-invoice-create);
+      6. After the payment is made or charged by the user, the Avanor system [sends a notification](#tag/callbacks) to the URL of interaction with the shop, containing payment information, for more information, see [here](#operation/post-invoice-create);
 
       7. After receiving the charge, the payment is considered successfully completed.
 
@@ -93,13 +93,13 @@ tags:
 
       5. The response returns information with the invoice issued and data to be sent by the specified method to the specified URL for making or charging the payment. It is necessary to refer the user to make the payment. In case `result: false`, you need to analyse the error code in the `error_code` field (see [description of error codes](#tag/errors-list)). If the `error code` is not fatal, then you need to wait for the [server notification](#tag/callbacks). If the `error code` is fatal, then communication with our API is over, it is necessary to inform the user that the payment was not created.
 
-      6. After payment is completed by the user, the Avanor tech system [sends a notification](#tag/callbacks) to the shop's interaction URL, with information about the blocking of funds;
+      6. After payment is completed by the user, the Avanor system [sends a notification](#tag/callbacks) to the shop's interaction URL, with information about the blocking of funds;
 
       7. After the funds are blocked on the client's account, you can charge the payment [invoice/charge](#operation/post-invoice-charge) or cancel the holding [invoice/unhold](#operation/post-invoice-unhold);
 
       8. The response returns information with the result of charge (sometimes the payment status may not be final, then you should wait for the notification);
 
-      9. Avanor tech system [will send a notification](#tag/callbacks) to the URL of the interaction of the shop with the final status regarding the confirmation of funds withdrawal.
+      9. Avanor system [will send a notification](#tag/callbacks) to the URL of the interaction of the shop with the final status regarding the confirmation of funds withdrawal.
 
       ### Ensuring payments idempotency
 
@@ -114,7 +114,7 @@ tags:
       * In case of a full refund, you refund the successfully paid payment in full.
       * In case of a partial refund - a part of the payment amount, for example, if you want to refund a part of the purchase.
 
-      After confirmation of the refund by the payment system, the Avanor tech system [will send a notification](#tag/callbacks) with details
+      After confirmation of the refund by the payment system, the Avanor system [will send a notification](#tag/callbacks) with details
       of refund to the URL transferred in the request when creating the refund. A detailed description of the notification format
       is described [here](#section/Refund-notification-example).
 
@@ -139,7 +139,7 @@ tags:
     description: |
       ### Issued invoice notice after payment or refund
 
-      After changing the payment status or returning to one of the final ones, the Avanor tech system sends a notification to the shop to the URL specified in the shop settings or in the request body (if specified in the description of the request parameters).
+      After changing the payment status or returning to one of the final ones, the Avanor system sends a notification to the shop to the URL specified in the shop settings or in the request body (if specified in the description of the request parameters).
 
       <div class="warning">
       <p>To successfully receive server-side notifications, please make sure that your server receiving HTTP requests from us is configured according to the current security standards described on <a href="https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Protection_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Protection_Cheat_Sheet.html</a></p>
@@ -216,7 +216,7 @@ tags:
       |  3    | Payment system has failed to create the payment                     | &minus;   |
       |  4    | Payment has been successful                                         | &plus;    |
       |  5    | Payment system has failed to receive a payment notice               | &minus;   |
-      |  6    | Avanor tech payment system has rejected the operation               | &plus;    |
+      |  6    | Avanor payment system has rejected the operation               | &plus;    |
       |  8    | Funds for the invoice are withheld (held) by the payment system     | &minus;   |
   - name: withdraw-create
     x-displayName: Payout creation
@@ -278,7 +278,7 @@ tags:
   - name: errors-list
     x-displayName: List of possible errors
     description: |
-      ### List of possible Avanor tech API errors
+      ### List of possible Avanor API errors
 
       You can use this data to control the logic of your application, analyze and solve problems, output messages
       to the user, and for any other purpose. For example, if you received `error_code: 11` in the response, then most likely you
@@ -308,7 +308,7 @@ tags:
       | 10         | Invalid request parameters                                                                                                                                                          | &plus;  |
       | 11         | Shop has not been found                                                                                                                                                             | &plus;  |
       | 12         | Shop is not active                                                                                                                                                                  | &plus;  |
-      | 13         | Account has not been found in Avanor tech system                                                                                                                                     | &plus;  |
+      | 13         | Account has not been found in Avanor system                                                                                                                                     | &plus;  |
       | 14         | Account status does not allow operations                                                                                                                                            | &plus;  |
       | 15         | Request from the current IP has been rejected                                                                                                                                       | &plus;  |
       | 16         | Currency exchange rate has not been found                                                                                                                                           | &plus;  |
@@ -610,7 +610,7 @@ paths:
 
         <div class="warning">
         When funds are held, merchants are required to confirm or cancel the payment within 5 days.
-        Avanor tech service does not automatically confirm or cancel held payments after this period.
+        Avanor service does not automatically confirm or cancel held payments after this period.
 
         The funds holding period cannot exceed 5 days.
         </div>
@@ -967,10 +967,10 @@ paths:
         - RequestSignature: []
   /withdraw/status:
     post:
-      summary: Payout status request by ID of the payout created in Avanor tech system
+      summary: Payout status request by ID of the payout created in Avanor system
       operationId: post-withdraw-status
       description: |
-        To get the status and up-to-date information of payments by the Avanor tech system ID.
+        To get the status and up-to-date information of payments by the Avanor system ID.
 
         <div class="success">
         <p>Fields involved in request signature generation:</p>
@@ -1186,7 +1186,7 @@ components:
         shop_id:
           type: integer
           example: 202203
-          description: Unique shop identifier in the Avanor tech system.
+          description: Unique shop identifier in the Avanor system.
       required:
         - shop_id
     ShopOrderID.v1:
@@ -1475,7 +1475,7 @@ components:
               description: |-
                 Bank card details should be sent when:
                 - You have a PCI DSS certificate
-                - You do not need a page on the Avanor tech side to get card details from the buyer
+                - You do not need a page on the Avanor side to get card details from the buyer
 
                 In case the payment way to the cards is used and the card data is not transmitted, the response to the request will contain a link to redirect the buyer to enter the card details.
                 Also, `method`, `url` and `data` will be filled in if the user needs to be redirected to pass the 3DSecure check.
@@ -1632,7 +1632,7 @@ components:
         id:
           type: number
           example: 32105
-          description: Unique invoice identifier in Avanor tech system
+          description: Unique invoice identifier in Avanor system
         method:
           type: string
           nullable: true
@@ -1739,11 +1739,11 @@ components:
       description: Payment description
       example: Invoice for user_id=7766
     ErrorCode.v1:
-      title: Avanor tech API error code
+      title: Avanor API error code
       type: number
       format: integer
       example: 0
-      description: 'Avanor tech API error code. `0` in cases there is no any error. Other codes can be found here: [Description of error codes](#tag/errors-list)'
+      description: 'Avanor API error code. `0` in cases there is no any error. Other codes can be found here: [Description of error codes](#tag/errors-list)'
       required:
         - error_code
     BaseInvoiceStatus.v1:
@@ -1756,7 +1756,7 @@ components:
             status: {}
             payment_id:
               type: integer
-              description: Unique identifier of the issued invoice in Avanor tech system
+              description: Unique identifier of the issued invoice in Avanor system
               example: 12
             ps_data:
               type: string
@@ -1773,7 +1773,7 @@ components:
                 - $ref: '#/components/schemas/Currency.v1'
             payway:
               allOf:
-                - description: Payway in Avanor tech system used by the user for payment
+                - description: Payway in Avanor system used by the user for payment
                 - $ref: '#/components/schemas/Payway.v1'
             description:
               $ref: '#/components/schemas/InvoiceDescription.v1'
@@ -1975,7 +1975,7 @@ components:
       properties:
         invoice_id:
           type: number
-          description: Invoice ID in the Avanor tech system.
+          description: Invoice ID in the Avanor system.
           format: integer
           example: 27401
       required:
@@ -2629,7 +2629,7 @@ components:
             withdraw_id:
               type: integer
               example: 131
-              description: Payout (withdraw) ID in Avanor tech system.
+              description: Payout (withdraw) ID in Avanor system.
           required:
             - withdraw_id
       description: ''
@@ -2650,7 +2650,7 @@ components:
           properties:
             id:
               type: integer
-              description: Payout ID in Avanor tech system
+              description: Payout ID in Avanor system
             status:
               $ref: '#/components/schemas/Status.v1'
             ps_currency:
