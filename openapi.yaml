@@ -1602,9 +1602,9 @@ components:
       properties:
         data:
           example:
-            MD: 38e3244e2bcc4ed7a29aaa886a0e5374
-            PaReq: YPhfxL294rkdSCu7zBd6yArmgEuNhyuhCC6UNeNoql9OmgYbGcAQHkNxwZ6x0j2kLdoGytuJ9GfwxxkGLzZp5VdlQfhDd5QSK9XE68IrmgBJ1DxSsozMvGC9zGAxm2rDYqcA5HYuCQ66ocOw7P5sKQZphxm2DqoYBwji9zInFRIaTabC4UXzCjWbWT5NNpmz0ULXiOBmX6JB9BpP85UCrwWPC8Ee97gX7KRyOfZoe5Z65aKF7WLNFS5L3VffcV0YVyLKe2dXgrs3fACGrVM7dZmDFB7NiJL0yqgv5oYPjDSniZAkrlbShjILNLspVdzLwRKygvLOfEhhKvqmnoOTkNw4qfvgj4inrHnR3EcO3CozcdFh6T23sA7uP7LLZ3cHfAayfw9VpssdfeKorwajz2XdOOIrl45cXKnNLVEivyFbbUJF8wUq8bkkZXyTQGCKhqB819w2MuFu
-            TermUrl: https://card-api-test.example.com/v1/invoice/finish3ds/38e3244e2bcc4ed7a29aaa886a0e5374
+            MD: f8a2b5c7e9d14a6b3c0e8f7d6a5b4c3e
+            PaReq: m9N2vK4xZ7pQW1rE3tY6uI5oO0pA8sD1fG3hJ2kL4lZ6xC7vB9bN1mQ3wE5rT7yU9iI2oO4pA6sD8fF0gG2hH4jJ6kK8lL1zZ3xX5cV7vB9bN2m4Q6w8E0r2T4y6U8i0I2o4O6p8A0s2D4f6F8g0G2h4Hj6J8kK0lL2zZ4xX6cC8vV0bB2nN4mM6qQ8wW0eE2rR4tT6yY8uU0iI2oO4pP6aA8sS0dD2fF4gG6hH8jJ0kK2lL4zZ6xX8cC0vV2bB4nN6mM8qQ0wW2eE4rR6tT8yY0uU2iI4oO6pP8aS0dD2fF4gG6hH8jJ0kK2lL4zZ6xX8cC0vV2bB4nN6mM8wW1eE3rR5tT7yY9uU2iI4oO6pP8aA0sS2dD4fF6gG8hH0jJ2kK4lL6zZ8xX0cC2vV4bB6nN8mM0qQ2wW4eE6rR8tT0yY2uU4iI6oO8pP0aA2sS4dD6fF8gG0hH2jJ4kK6lL
+            TermUrl: https://card-test.domain.com/v1/invoice/finish3ds/f8a2b5c7e9d14a6b3c0e8f7d6a5b4c3e
           type: object
           nullable: true
           description: |
