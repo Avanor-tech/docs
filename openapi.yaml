@@ -1212,7 +1212,6 @@ components:
     InvoiceCreatePayload.v1:
       oneOf:
         - $ref: '#/components/schemas/InvoiceCreateCard.v1'
-        - $ref: '#/components/schemas/InvoiceCreatePaymentToken.v1'
         - $ref: '#/components/schemas/InvoiceCreateFPS.v1'
     InvoiceCreateFPS.v1:
       title: Faster payment system
