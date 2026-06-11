@@ -44,7 +44,7 @@ info:
 servers:
   - url: https://api.avanor.tech/gateway/v1
     description: The production API server
-  - url: https://api.test.cplus-int.tech/gateway/v1
+  - url: https://test.avanor.tech/gateway/v1
     description: The test API server
 tags:
   - name: invoice-create
@@ -491,7 +491,7 @@ paths:
         redirect_url = '{url}?{parameters}'.format(url=data['url'], parameters=urllib.parse.urlencode(data['data']))
         ```
 
-        An example of the formed URL: `https://checkout.domain.com/form/?transaction_id=1231&payment_type=card&fail_url=https%3A%2F%2Fexample.com%2Fpayment%2F%3Fstatus%3Dfail&success_url=https%3A%2F%2Fexample.com%2Fpayment%2F%3Fstatus%3Dsuccess`
+        An example of the formed URL: `https://checkout.domain.com/form/?transaction_id=abcd&payment_type=card&fail_url=https%3A%2F%2Fgogle.com%2Fpayment%2F%3Fstatus%3Dfail&success_url=https%3A%2F%2Fgogle.com%2Fpayment%2F%3Fstatus%3Dsuccess`
 
         <div class="attention">
         Please note that the parameters <code>failed_url</code>, <code>success_url</code>, <code>callback_url</code>, <code>callback_rejected_url</code> specified in the shop settings have priority over those specified in request. If you want to use unique url for each request, you need to inform the manager about it.
@@ -1596,19 +1596,6 @@ components:
                   example: '05'
           required:
             - client_ip
-    InvoiceCreatePaymentToken.v1:
-      title: Invoice issue by payment token
-      allOf:
-        - $ref: '#/components/schemas/InvoiceCreateBase.v1'
-        - type: object
-          properties:
-            payment_token:
-              type: string
-              format: uuid
-              description: Payment token from a previous successful payment with `issue_payment_token`
-              example: 4f6cf35x-2c4y-483z-a0a9-158621f77a21
-          required:
-            - payment_token
     InvoiceCreateInfo.v1:
       title: Invoice payment form
       type: object
