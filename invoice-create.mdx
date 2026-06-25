@@ -10,9 +10,55 @@ title: "Invoice issue (payment creation)"
 
 ### Single-step payment
 
-<Frame>
-  ![Telegram Cloud Photo Size 2 5204333575216502086 X](/images/telegram-cloud-photo-size-2-5204333575216502086-x.jpg)
-</Frame>
+```mermaid
+sequenceDiagram
+    autonumber
+
+    actor U as User
+    participant S as Shop
+    participant PG as Payment Gateway API
+
+    U->>S: Place order
+
+    rect rgb(245,245,245)
+        Note over S,PG: Invoice validation
+
+        S->>PG: POST /invoice/try
+        activate PG
+
+        PG-->>S: result=true
+
+        deactivate PG
+    end
+
+    rect rgb(245,245,245)
+        Note over S,PG: Invoice creation
+
+        S->>PG: POST /invoice/create
+        activate PG
+
+        PG-->>S: invoiceId, paymentUrl
+
+        deactivate PG
+    end
+
+    S-->>U: Redirect to paymentUrl
+
+    Note over U,PG: User completes payment
+
+    critical Payment completed
+
+        PG-)S: Callback: InvoicePaid
+        activate S
+
+        S-->>PG: HTTP 200 OK
+
+        deactivate S
+
+    end
+
+    S-->>U: Deliver goods/services
+```
 
 1. User generates an order on the shop's website;
 2. Shop sends a request to pre-calculate the invoice and get additional parameters [invoice/try](/api-reference/invoice-create/invoice-preliminary-calculation);
@@ -24,9 +70,75 @@ title: "Invoice issue (payment creation)"
 
 ### Two-step payment
 
-<Frame>
-  ![Invoice Two Stage Flow V1](/images/invoice-two-stage-flow.v1.png)
-</Frame>
+```mermaid
+sequenceDiagram
+    autonumber
+
+    actor U as User
+    participant S as Shop
+    participant PG as Payment Gateway API
+
+    U->>S: Place order
+
+    rect rgb(245,245,245)
+        Note over S,PG: Payment validation
+
+        S->>PG: POST /invoice/try
+        PG-->>S: result=true
+    end
+
+    rect rgb(245,245,245)
+        Note over S,PG: Funds authorization
+
+        S->>PG: POST /invoice/hold
+        activate PG
+
+        PG-->>S: holdId, paymentUrl
+
+        deactivate PG
+    end
+
+    S-->>U: Redirect to paymentUrl
+
+    Note over U,PG: User confirms payment
+
+    critical Funds successfully blocked
+
+        PG-)S: Callback: FundsHeld
+        activate S
+
+        S-->>PG: HTTP 200 OK
+
+        deactivate S
+
+    end
+
+    Note over S: Order processing
+
+    rect rgb(245,245,245)
+        Note over S,PG: Capture authorized funds
+
+        S->>PG: POST /invoice/charge
+        activate PG
+
+        PG-->>S: charge accepted
+
+        deactivate PG
+    end
+
+    critical Capture completed
+
+        PG-)S: Callback: FundsCaptured
+        activate S
+
+        S-->>PG: HTTP 200 OK
+
+        deactivate S
+
+    end
+
+    S-->>U: Order completed
+```
 
 1. User generates an order on the shop's website;
 2. Shop sends a request for a preliminary calculation of the issued invoice and receiving additional parameters [invoice/try](/api-reference/invoice-create/invoice-preliminary-calculation);
