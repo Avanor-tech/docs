@@ -1477,6 +1477,12 @@ components:
 
                 In case the payment way to the cards is used and the card data is not transmitted, the response to the request will contain a link to redirect the buyer to enter the card details.
                 Also, `method`, `url` and `data` will be filled in if the user needs to be redirected to pass the 3DSecure check.
+              example:
+                number: '4814651800997171'
+                cardholder: ELIZABETH JONES
+                expiry_month: '11'
+                expiry_year: '34'
+                cvv: '518'
               properties:
                 number:
                   type: string
@@ -1594,6 +1600,37 @@ components:
                   example: '05'
           required:
             - client_ip
+      example:
+        shop_id: 202203
+        shop_order_id: 389d4f2c-46b9-4164-bcc4-fbd51e00d445
+        amount: '105.45'
+        currency: 840
+        payway: payway_usd
+        client_ip: 192.168.0.1
+        description: Description of example invoice
+        failed_url: https://example.com/status/failed/
+        success_url: https://example.com/status/success/
+        callback_url: https://example.com/status/callback/
+        callback_rejected_url: https://example.com/status/rejected/
+        expires_at: '2026-12-30T00:00:00Z'
+        card:
+          number: '4814651800997171'
+          cardholder: ELIZABETH JONES
+          expiry_month: '11'
+          expiry_year: '34'
+          cvv: '518'
+        issue_payment_token: true
+        client_info:
+          browser_accept_header: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8
+          browser_java_enabled: false
+          browser_javascript_enabled: true
+          browser_language: en
+          browser_color_depth: '24'
+          browser_screen_height: '800'
+          browser_screen_width: '480'
+          browser_tz: '-120'
+          browser_user_agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15
+          challenge_window_size: '05'
     InvoiceCreatePaymentToken.v1:
       title: Invoice issue by payment token
       allOf:
