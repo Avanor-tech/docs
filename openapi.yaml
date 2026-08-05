@@ -42,7 +42,7 @@ info:
 servers:
   - url: https://api.avanor.tech/gateway/v1
     description: The production API server
-  - url: https://test.avanor.tech/gateway/v1
+  - url: https://api.test.avanor.tech/gateway/v1
     description: The test API server
 tags:
   - name: invoice-create
