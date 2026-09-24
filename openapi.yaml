@@ -1117,7 +1117,7 @@ components:
         {
             "shop_id": 202203,
             "shop_order_id" : "1994",
-            "amout": "104.04",
+            "amount": "104.04",
             "currency": 840,
             "payway": "payway_usd",
             "description": "Invoice sign",
