@@ -489,7 +489,7 @@ paths:
         redirect_url = '{url}?{parameters}'.format(url=data['url'], parameters=urllib.parse.urlencode(data['data']))
         ```
 
-        An example of the formed URL: `https://checkout.domain.com/form/?transaction_id=abcd&payment_type=card&fail_url=https%3A%2F%2Fgogle.com%2Fpayment%2F%3Fstatus%3Dfail&success_url=https%3A%2F%2Fgogle.com%2Fpayment%2F%3Fstatus%3Dsuccess`
+        An example of the formed URL: `https://checkout.domain.com/form/?transaction_id=abcd&payment_type=card&fail_url=https%3A%2F%2Fgoogle.com%2Fpayment%2F%3Fstatus%3Dfail&success_url=https%3A%2F%2Fgogle.com%2Fpayment%2F%3Fstatus%3Dsuccess`
 
         <div class="attention">
         Please note that the parameters <code>failed_url</code>, <code>success_url</code>, <code>callback_url</code>, <code>callback_rejected_url</code> specified in the shop settings have priority over those specified in request. If you want to use unique url for each request, you need to inform the manager about it.
@@ -1116,7 +1116,7 @@ components:
         ```json
         {
             "shop_id": 202203,
-            "shop_order_id" : "1994",
+            "shop_order_id": "1994",
             "amount": "104.04",
             "currency": 840,
             "payway": "payway_usd",
@@ -1490,12 +1490,12 @@ components:
                   example: '4814651800997171'
                 cardholder:
                   type: string
-                  pattern: ' ^[0-9A-Z-/ _.'']{1,26}$'
+                  pattern: '^[0-9A-Z-/ _.'']{1,26}$'
                   description: Cardholder name. If name is not provided default value «Card Holder» will be used
                   example: ELIZABETH JONES
                 expiry_month:
                   type: string
-                  pattern: ' (^0?[1-9]{1}$)|(^1[012]{1}$)'
+                  pattern: '(^0?[1-9]{1}$)|(^1[012]{1}$)'
                   description: Bank card expiration month
                   example: '11'
                 expiry_year:

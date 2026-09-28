@@ -30,8 +30,6 @@ To ensure that our API improvements do not break your integration, please consid
 
 ## Request signature
 
-### Request signature
-
 Every API request must be signed so that we can identify your account.
 
 The signature is transferred in the request body through the `sign` parameter, for example:
@@ -39,7 +37,7 @@ The signature is transferred in the request body through the `sign` parameter, f
 ```json
 {
 "shop_id": 202203,
-"shop_order_id" : "1994",
+"shop_order_id": "1994",
 "amount": "104.04",
 "currency": 840,
 "payway": "payway_usd",
